@@ -41,6 +41,21 @@ Design a premium, cinematic, editorial website for Bros Cafe (olive #66734A / cr
 - Desktop: hero, coffee, moment, menu, loyalty, community, footer screenshots; backend /api/ responds 200
 - Mobile (390px): hero crop, hamburger menu, nav → loyalty scroll flow
 
+## Implemented (2026-08-25, part 2 — Advanced Interaction Upgrade)
+- Full product catalog (17 products: coffee/cold/food/sweet/merch) in src/data/products.js with flavor profiles, ingredients, sizes, allergens, Bros tips, Behind-the-Cup steps, pairings
+- Cinematic product modal: blurred backdrop, expanding image, swipe/drag gallery with thumbnails, video slide for espresso, staggered detail reveal, animated flavor sliders, Behind the Cup vertical reveal, Goes Well With pairings, More From Bros related products (smooth in-modal switching), ESC/backdrop close
+- The Collection: animated category filters (ALL/COFFEE/COLD/FOOD/SWEET/MERCH with layout pill) + personality search ("What are you craving?" — coffee/sweet/gift synonyms) + animated grid rearrange
+- Favorites: heart on every card/modal, spring pop animation, localStorage persistence, "Your Bros Picks" section appears only when favorites exist
+- "Add to My Day": playful list with floating cup button + slide-in drawer ("That's a good day."), persisted locally
+- Discover Bros: vertical→horizontal sticky story section (Coffee/Sweet/People/Merch panels using user's uploaded brand posters + end CTA), progress bar, reduced-motion fallback
+- Merch lookbook: editorial asymmetric grid with masked cream-panel reveals, hover price cards
+- Image lightbox: community collage + about photo open fullscreen viewer with prev/next/swipe/counter
+- Custom cursor (desktop only): VIEW / EXPLORE / PLAY floating labels on interactive media
+- Loader: 1.3s coffee-cup steam intro; hero/nav delays shifted to follow it
+- Easter eggs: click nav logo 5× → tiny coffee burst; hover loyalty card cup icon → steam rises
+- Coffee section cards now open the product modal; quick-view hover chips; video hover preview on espresso card
+- Verified: desktop + mobile (390px) — modal open/switch/close, fav, day drawer, filters, search, lightbox nav, horizontal scroll, swipe gallery
+
 ## Backlog / Next Tasks
 - P0: Owner connects LOYALTY_URL in src/config.js to the real loyalty-card signup
 - P0: Replace placeholder videos (config.js VIDEOS) with real Bros Cafe footage

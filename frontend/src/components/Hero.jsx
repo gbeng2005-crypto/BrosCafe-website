@@ -63,7 +63,7 @@ export default function Hero() {
           data-testid="hero-eyebrow"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.5, ease: EASE }}
+          transition={{ duration: 0.9, delay: 1.7, ease: EASE }}
           className="mb-6 text-[11px] font-medium tracking-[0.4em] text-[#F5F0E6]/80"
         >
           BROS CAFE — SPECIALTY COFFEE
@@ -73,14 +73,14 @@ export default function Hero() {
           data-testid="hero-title"
           className="font-serif-display text-[#F5F0E6] text-[16vw] leading-[0.92] tracking-tight sm:text-[13vw] lg:text-[9.5rem]"
         >
-          <MaskedLine delay={0.7} className="font-medium">Good coffee.</MaskedLine>
-          <MaskedLine delay={0.88} className="font-medium italic">Good people.</MaskedLine>
+          <MaskedLine delay={1.9} className="font-medium">Good coffee.</MaskedLine>
+          <MaskedLine delay={2.08} className="font-medium italic">Good people.</MaskedLine>
         </h1>
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 1.25, ease: EASE }}
+          transition={{ duration: 0.9, delay: 2.45, ease: EASE }}
           className="mt-10 flex flex-wrap items-center gap-4"
         >
           <button
@@ -105,7 +105,7 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.8, duration: 1 }}
+        transition={{ delay: 3.1, duration: 1 }}
         className="absolute bottom-8 right-6 z-10 hidden items-center gap-3 text-[10px] tracking-[0.35em] text-[#F5F0E6]/70 md:right-12 md:flex"
         aria-hidden="true"
       >

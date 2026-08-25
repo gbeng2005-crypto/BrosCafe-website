@@ -2,30 +2,36 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import Reveal from "@/components/Reveal";
 import SectionLabel from "@/components/SectionLabel";
+import MaskedImage from "@/components/MaskedImage";
+import { useApp } from "@/store/AppStore";
 import { IMAGES, VIDEOS } from "@/config";
 
 const SHOTS = [
-  { img: IMAGES.collageInterior, alt: "Inside Bros Cafe", cls: "col-span-2 row-span-2 h-full" },
-  { img: VIDEOS.hero.poster, alt: "Espresso being pulled", cls: "col-span-1 row-span-1 h-full" },
-  { img: IMAGES.collageFlatlay, alt: "Coffee flat lay", cls: "col-span-1 row-span-2 h-full" },
-  { img: IMAGES.collageMagazine, alt: "Coffee and a magazine", cls: "col-span-1 row-span-1 h-full" },
-  { img: VIDEOS.moment.poster, alt: "Cafe moment", cls: "col-span-2 row-span-1 h-full" },
+  { img: IMAGES.collageInterior, alt: "Inside Bros Cafe", cls: "col-span-2 row-span-2 h-full", variant: "left" },
+  { img: VIDEOS.hero.poster, alt: "Espresso being pulled", cls: "col-span-1 row-span-1 h-full", variant: "up" },
+  { img: IMAGES.collageFlatlay, alt: "Coffee flat lay", cls: "col-span-1 row-span-2 h-full", variant: "right" },
+  { img: IMAGES.collageMagazine, alt: "Coffee and a magazine", cls: "col-span-1 row-span-1 h-full", variant: "up" },
+  { img: VIDEOS.moment.poster, alt: "Cafe moment", cls: "col-span-2 row-span-1 h-full", variant: "left" },
 ];
 
-function Shot({ shot, index, progress, reduce }) {
+function Shot({ shot, index, progress, reduce, onOpen }) {
   const speed = index % 2 === 0 ? 24 : -24;
   const y = useTransform(progress, [0, 1], reduce ? [0, 0] : [speed, -speed]);
   return (
     <motion.div
       data-testid={`community-shot-${index}`}
       style={{ y }}
-      className={`group overflow-hidden rounded-3xl ${shot.cls}`}
+      className={`group cursor-pointer ${shot.cls}`}
+      onClick={onOpen}
+      data-cursor="explore"
     >
-      <img
+      <MaskedImage
         src={shot.img}
         alt={shot.alt}
-        loading="lazy"
-        className="h-full min-h-[180px] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+        variant={shot.variant}
+        delay={index * 0.08}
+        className="h-full w-full rounded-3xl"
+        imgClassName="h-full min-h-[180px] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
       />
     </motion.div>
   );
@@ -34,12 +40,14 @@ function Shot({ shot, index, progress, reduce }) {
 export default function Community() {
   const ref = useRef(null);
   const reduce = useReducedMotion();
+  const { openLightbox } = useApp();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const images = SHOTS.map((s) => s.img);
 
   return (
     <section id="community" ref={ref} data-testid="community-section" className="bg-white">
       <div className="mx-auto max-w-[1440px] px-6 py-28 md:px-12 md:py-40">
-        <SectionLabel number="06" title="COMMUNITY" />
+        <SectionLabel number="09" title="COMMUNITY" />
         <Reveal>
           <h2 className="font-serif-display text-5xl font-medium leading-[1.02] tracking-tight text-[#66734A] md:text-7xl">
             SEE YOU
@@ -56,7 +64,7 @@ export default function Community() {
 
         <div className="mt-16 grid auto-rows-[170px] grid-cols-2 gap-4 md:auto-rows-[210px] md:grid-cols-4 md:gap-6">
           {SHOTS.map((s, i) => (
-            <Shot key={i} shot={s} index={i} progress={scrollYProgress} reduce={reduce} />
+            <Shot key={i} shot={s} index={i} progress={scrollYProgress} reduce={reduce} onOpen={() => openLightbox(images, i)} />
           ))}
         </div>
       </div>

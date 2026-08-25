@@ -42,7 +42,7 @@ export default function MenuPreview() {
     <section id="menu" data-testid="menu-section" className="mx-auto max-w-[1440px] px-6 py-28 md:px-12 md:py-40">
       <div className="grid gap-16 lg:grid-cols-[1fr_1.3fr] lg:gap-24">
         <div className="lg:sticky lg:top-32 lg:self-start">
-          <SectionLabel number="03" title="MENU PREVIEW" />
+          <SectionLabel number="04" title="MENU PREVIEW" />
           <Reveal>
             <h2 className="font-serif-display text-5xl font-medium leading-[1.02] tracking-tight text-[#66734A] md:text-7xl">
               SOMETHING

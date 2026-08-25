@@ -70,7 +70,7 @@ export default function WhatsNew() {
     <section id="news" data-testid="news-section" className="mx-auto max-w-[1440px] px-6 py-28 md:px-12 md:py-40">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <SectionLabel number="05" title="WHAT'S NEW" />
+          <SectionLabel number="08" title="WHAT'S NEW" />
           <Reveal>
             <h2 className="font-serif-display text-5xl font-medium leading-[1.02] tracking-tight text-[#66734A] md:text-7xl">
               FROM THE BROS<span className="italic">.</span>

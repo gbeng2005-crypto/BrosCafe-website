@@ -41,7 +41,15 @@ function LoyaltyCardVisual() {
             <p className="font-serif-display text-lg font-semibold tracking-[0.14em] text-[#66734A]">BROS CAFE</p>
             <p className="mt-1 text-[10px] tracking-[0.3em] text-[#66734A]/60">LOYALTY CLUB</p>
           </div>
-          <Coffee size={20} className="text-[#66734A]/70" strokeWidth={1.5} />
+          <div className="group/cup relative flex h-8 w-8 items-end justify-center">
+            <div
+              className="steam absolute -top-2 left-1/2 -translate-x-1/2 text-[#66734A]/70 opacity-0 transition-opacity duration-300 group-hover/cup:opacity-100"
+              aria-hidden="true"
+            >
+              <span /><span /><span />
+            </div>
+            <Coffee size={20} className="text-[#66734A]/70" strokeWidth={1.5} />
+          </div>
         </div>
         <div className="mt-10 flex items-end justify-between">
           <div>
@@ -69,7 +77,7 @@ export default function LoyaltyCTA() {
     <section id="loyalty" data-testid="loyalty-section" className="grain relative overflow-hidden bg-[#66734A]">
       <div className="mx-auto grid max-w-[1440px] items-center gap-16 px-6 py-28 md:px-12 md:py-40 lg:grid-cols-2 lg:gap-24">
         <div>
-          <SectionLabel number="04" title="LOYALTY" light />
+          <SectionLabel number="07" title="LOYALTY" light />
           <Reveal>
             <h2 className="font-serif-display text-5xl font-medium leading-[1.02] tracking-tight text-[#F5F0E6] md:text-7xl">
               YOUR COFFEE

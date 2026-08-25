@@ -103,3 +103,44 @@ body {
         display: contents !important;
     }
 }
+
+/* Steam wisps — loader + loyalty card hover easter egg */
+.steam {
+    display: flex;
+    gap: 4px;
+}
+.steam span {
+    width: 2px;
+    height: 10px;
+    border-radius: 2px;
+    background: currentColor;
+    opacity: 0;
+    animation: steam-rise 1.5s ease-out infinite;
+}
+.steam span:nth-child(2) {
+    animation-delay: 0.4s;
+}
+.steam span:nth-child(3) {
+    animation-delay: 0.8s;
+}
+@keyframes steam-rise {
+    0% {
+        transform: translateY(5px) scaleY(0.6);
+        opacity: 0;
+    }
+    35% {
+        opacity: 0.6;
+    }
+    100% {
+        transform: translateY(-9px) scaleY(1.1);
+        opacity: 0;
+    }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}

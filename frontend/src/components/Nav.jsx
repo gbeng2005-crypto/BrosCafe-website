@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { Menu, X, ArrowUpRight, Coffee } from "lucide-react";
 import { LOYALTY_URL } from "@/config";
 import { scrollToSection } from "@/hooks/useLenis";
 
@@ -12,9 +12,29 @@ const LINKS = [
   { label: "LOYALTY", id: "loyalty" },
 ];
 
+function LogoBurst() {
+  return (
+    <span className="pointer-events-none absolute -top-3 left-1/2 -translate-x-1/2" aria-hidden="true">
+      {[...Array(5)].map((_, i) => (
+        <motion.span
+          key={i}
+          initial={{ opacity: 1, y: 0, x: 0, scale: 0.5 }}
+          animate={{ opacity: 0, y: -34 - i * 6, x: (i - 2) * 12, scale: 1 }}
+          transition={{ duration: 0.9, delay: i * 0.05, ease: "easeOut" }}
+          className="absolute text-[#66734A]"
+        >
+          <Coffee size={13} strokeWidth={1.6} />
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [burst, setBurst] = useState(0);
+  const clicks = useRef(0);
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 60));
@@ -24,13 +44,19 @@ export default function Nav() {
     scrollToSection(id);
   };
 
+  const logoClick = () => {
+    clicks.current += 1;
+    if (clicks.current % 5 === 0) setBurst((b) => b + 1);
+    go("home");
+  };
+
   return (
     <>
       <motion.header
         data-testid="main-nav"
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.9, delay: 1.5, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-500 ${
           scrolled
             ? "bg-[#F5F0E6]/75 backdrop-blur-xl shadow-[0_1px_0_rgba(102,115,74,0.12)]"
@@ -40,13 +66,14 @@ export default function Nav() {
         <nav className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-5 md:px-12">
           <button
             data-testid="nav-logo"
-            onClick={() => go("home")}
-            className={`font-serif-display text-xl font-semibold tracking-[0.18em] transition-colors duration-500 ${
+            onClick={logoClick}
+            className={`relative font-serif-display text-xl font-semibold tracking-[0.18em] transition-colors duration-500 ${
               scrolled ? "text-[#66734A]" : "text-[#F5F0E6]"
             }`}
             aria-label="Bros Cafe — back to top"
           >
             BROS CAFE
+            {burst > 0 && <LogoBurst key={burst} />}
           </button>
 
           <ul className="hidden items-center gap-8 lg:flex">
