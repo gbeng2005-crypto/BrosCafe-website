@@ -4,8 +4,10 @@ import { Coffee, Gift, ArrowUpRight, QrCode } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import SectionLabel from "@/components/SectionLabel";
 import { LOYALTY_URL } from "@/config";
+import { useApp } from "@/store/AppStore";
+import { STR } from "@/i18n";
 
-function LoyaltyCardVisual() {
+function LoyaltyCardVisual({ t }) {
   const reduce = useReducedMotion();
   const rx = useMotionValue(0);
   const ry = useMotionValue(0);
@@ -39,7 +41,7 @@ function LoyaltyCardVisual() {
         <div className="flex items-start justify-between">
           <div>
             <p className="font-serif-display text-lg font-semibold tracking-[0.14em] text-[#66734A]">BROS CAFE</p>
-            <p className="mt-1 text-[10px] tracking-[0.3em] text-[#66734A]/60">LOYALTY CLUB</p>
+            <p className="mt-1 text-[10px] tracking-[0.3em] text-[#66734A]/60">{t.cardClub}</p>
           </div>
           <div className="group/cup relative flex h-8 w-8 items-end justify-center">
             <div
@@ -53,8 +55,8 @@ function LoyaltyCardVisual() {
         </div>
         <div className="mt-10 flex items-end justify-between">
           <div>
-            <p className="text-[10px] tracking-[0.3em] text-[#66734A]/50">MEMBER</p>
-            <p className="font-serif-display mt-1 text-2xl italic text-[#66734A]">Your name here</p>
+            <p className="text-[10px] tracking-[0.3em] text-[#66734A]/50">{t.cardMember}</p>
+            <p className="font-serif-display mt-1 text-2xl italic text-[#66734A]">{t.cardName}</p>
           </div>
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#66734A]">
             <QrCode size={30} className="text-[#F5F0E6]" strokeWidth={1.5} />
@@ -73,29 +75,30 @@ function LoyaltyCardVisual() {
 }
 
 export default function LoyaltyCTA() {
+  const { lang } = useApp();
+  const t = STR[lang].loyalty;
   return (
     <section id="loyalty" data-testid="loyalty-section" className="grain relative overflow-hidden bg-[#66734A]">
       <div className="mx-auto grid max-w-[1440px] items-center gap-16 px-6 py-28 md:px-12 md:py-40 lg:grid-cols-2 lg:gap-24">
         <div>
-          <SectionLabel number="07" title="LOYALTY" light />
+          <SectionLabel number="07" title={t.label} light />
           <Reveal>
             <h2 className="font-serif-display text-5xl font-medium leading-[1.02] tracking-tight text-[#F5F0E6] md:text-7xl">
-              YOUR COFFEE
+              {t.title1}
               <br />
-              SHOULD COUNT<span className="italic">.</span>
+              {t.title2}<span className="italic">{t.punct}</span>
             </h2>
           </Reveal>
           <Reveal delay={0.1}>
             <p className="font-serif-display mt-8 text-3xl font-medium italic leading-snug text-[#F5F0E6]/90 md:text-4xl">
-              Buy 4 coffees.
+              {t.sub1}
               <br />
-              Your next one is FREE.
+              {t.sub2}
             </p>
           </Reveal>
           <Reveal delay={0.15}>
             <p className="mt-6 max-w-sm text-sm leading-relaxed text-[#F5F0E6]/70">
-              One card, on your phone. Every cup counts — no apps to download,
-              no forms longer than your name.
+              {t.body}
             </p>
           </Reveal>
           <Reveal delay={0.2}>
@@ -104,13 +107,13 @@ export default function LoyaltyCTA() {
               href={LOYALTY_URL}
               className="group mt-10 inline-flex items-center gap-3 rounded-full bg-[#F5F0E6] px-9 py-4 text-[11px] font-semibold tracking-[0.2em] text-[#66734A] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_44px_rgba(0,0,0,0.3)]"
             >
-              GET MY LOYALTY CARD
+              {t.cta}
               <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
           </Reveal>
         </div>
         <Reveal delay={0.1}>
-          <LoyaltyCardVisual />
+          <LoyaltyCardVisual t={t} />
         </Reveal>
       </div>
     </section>

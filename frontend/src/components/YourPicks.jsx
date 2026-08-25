@@ -1,21 +1,23 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import Reveal from "@/components/Reveal";
-import SectionLabel from "@/components/SectionLabel";
 import { useApp } from "@/store/AppStore";
 import { getProduct } from "@/data/products";
+import { lp } from "@/data/products.hu";
+import { STR } from "@/i18n";
 
 export default function YourPicks() {
-  const { favorites, openProduct } = useApp();
+  const { favorites, openProduct, lang } = useApp();
+  const t = STR[lang].picks;
   const items = favorites.map(getProduct).filter(Boolean);
   if (items.length === 0) return null;
 
   return (
     <section id="picks" data-testid="picks-section" className="mx-auto max-w-[1440px] px-6 pb-28 md:px-12 md:pb-40">
-      <p className="mb-6 text-[11px] font-medium tracking-[0.4em] text-[#66734A]/60">SAVED BY YOU</p>
+      <p className="mb-6 text-[11px] font-medium tracking-[0.4em] text-[#66734A]/60">{t.label}</p>
       <Reveal>
         <h2 className="font-serif-display text-4xl font-medium tracking-tight text-[#66734A] md:text-6xl">
-          YOUR BROS PICKS<span className="italic">.</span>
+          {t.title}<span className="italic">{t.punct}</span>
         </h2>
       </Reveal>
       <div className="mt-10 flex flex-wrap gap-4">
@@ -35,7 +37,7 @@ export default function YourPicks() {
             >
               <img src={p.images[0]} alt={p.name} className="h-16 w-16 rounded-xl object-cover" />
               <div>
-                <p className="font-serif-display text-lg font-medium text-[#66734A]">{p.name}</p>
+                <p className="font-serif-display text-lg font-medium text-[#66734A]">{lp(p, lang).name}</p>
                 <p className="text-xs text-[#66734A]/60">{p.price}</p>
               </div>
               <Heart size={14} className="ml-2 text-[#66734A]" fill="#66734A" />

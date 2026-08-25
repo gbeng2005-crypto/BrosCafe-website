@@ -3,36 +3,13 @@ import { ArrowUpRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import SectionLabel from "@/components/SectionLabel";
 import { IMAGES, VIDEOS } from "@/config";
+import { useApp } from "@/store/AppStore";
+import { STR } from "@/i18n";
 
-const POSTS = [
-  {
-    tag: "NEW DRINK",
-    title: "Espresso tonic, but make it Bros.",
-    text: "Double shot over tonic and ice. Sounds wrong, tastes right.",
-    img: IMAGES.americano,
-    large: true,
-  },
-  {
-    tag: "SEASONAL",
-    title: "The winter menu is here.",
-    text: "Spiced honey latte and a cardamom cappuccino. Until spring.",
-    img: IMAGES.cappuccino,
-  },
-  {
-    tag: "EVENT",
-    title: "Cupping night — first Thursday.",
-    text: "Taste this month's beans with us. Free, as always.",
-    img: IMAGES.about,
-  },
-  {
-    tag: "NOTE",
-    title: "We now open at seven.",
-    text: "Early birds, your table is waiting.",
-    img: VIDEOS.moment.poster,
-  },
-];
+const POST_IMGS = [IMAGES.americano, IMAGES.cappuccino, IMAGES.about, VIDEOS.moment.poster];
+const POST_SIZES = [true, false, false, false];
 
-function PostCard({ post, index }) {
+function PostCard({ post, index, readLabel }) {
   return (
     <Reveal delay={index * 0.07} className={post.large ? "md:col-span-2" : ""}>
       <motion.article
@@ -56,7 +33,7 @@ function PostCard({ post, index }) {
           </h3>
           <p className="mt-2 text-sm leading-relaxed text-[#66734A]/70">{post.text}</p>
           <span className="mt-5 inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.2em] text-[#66734A]">
-            READ
+            {readLabel}
             <ArrowUpRight size={13} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </span>
         </div>
@@ -66,28 +43,31 @@ function PostCard({ post, index }) {
 }
 
 export default function WhatsNew() {
+  const { lang } = useApp();
+  const t = STR[lang].news;
+  const posts = t.posts.map((p, i) => ({ ...p, img: POST_IMGS[i], large: POST_SIZES[i] }));
+
   return (
     <section id="news" data-testid="news-section" className="mx-auto max-w-[1440px] px-6 py-28 md:px-12 md:py-40">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <SectionLabel number="08" title="WHAT'S NEW" />
+          <SectionLabel number="08" title={t.label} />
           <Reveal>
             <h2 className="font-serif-display text-5xl font-medium leading-[1.02] tracking-tight text-[#66734A] md:text-7xl">
-              FROM THE BROS<span className="italic">.</span>
+              {t.title}<span className="italic">{t.punct}</span>
             </h2>
           </Reveal>
         </div>
         <Reveal delay={0.1}>
           <p className="max-w-xs text-sm leading-relaxed text-[#66734A]/70">
-            New drinks, small events, things we're trying. Posted when there's
-            actually something to say.
+            {t.body}
           </p>
         </Reveal>
       </div>
 
       <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {POSTS.map((p, i) => (
-          <PostCard key={p.title} post={p} index={i} />
+        {posts.map((p, i) => (
+          <PostCard key={p.title} post={p} index={i} readLabel={t.read} />
         ))}
       </div>
     </section>

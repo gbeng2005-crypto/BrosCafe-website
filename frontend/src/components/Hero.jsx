@@ -2,6 +2,8 @@ import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-moti
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { LOYALTY_URL, VIDEOS } from "@/config";
 import { scrollToSection } from "@/hooks/useLenis";
+import { useApp } from "@/store/AppStore";
+import { STR } from "@/i18n";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -22,6 +24,8 @@ function MaskedLine({ children, delay, className }) {
 
 export default function Hero() {
   const reduce = useReducedMotion();
+  const { lang } = useApp();
+  const t = STR[lang].hero;
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const sx = useSpring(mx, { stiffness: 40, damping: 20 });
@@ -66,15 +70,15 @@ export default function Hero() {
           transition={{ duration: 0.9, delay: 1.7, ease: EASE }}
           className="mb-6 text-[11px] font-medium tracking-[0.4em] text-[#F5F0E6]/80"
         >
-          BROS CAFE — SPECIALTY COFFEE
+          {t.eyebrow}
         </motion.p>
 
         <h1
           data-testid="hero-title"
           className="font-serif-display text-[#F5F0E6] text-[16vw] leading-[0.92] tracking-tight sm:text-[13vw] lg:text-[9.5rem]"
         >
-          <MaskedLine delay={1.9} className="font-medium">Good coffee.</MaskedLine>
-          <MaskedLine delay={2.08} className="font-medium italic">Good people.</MaskedLine>
+          <MaskedLine delay={1.9} className="font-medium">{t.line1}</MaskedLine>
+          <MaskedLine delay={2.08} className="font-medium italic">{t.line2}</MaskedLine>
         </h1>
 
         <motion.div
@@ -88,7 +92,7 @@ export default function Hero() {
             onClick={() => scrollToSection("coffee")}
             className="group inline-flex items-center gap-3 rounded-full bg-[#F5F0E6] px-8 py-4 text-[11px] font-semibold tracking-[0.2em] text-[#66734A] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(0,0,0,0.18)]"
           >
-            EXPLORE
+            {t.explore}
             <ArrowDown size={14} className="transition-transform duration-300 group-hover:translate-y-0.5" />
           </button>
           <a
@@ -96,7 +100,7 @@ export default function Hero() {
             href={LOYALTY_URL}
             className="group inline-flex items-center gap-3 rounded-full border border-[#F5F0E6]/70 px-8 py-4 text-[11px] font-semibold tracking-[0.2em] text-[#F5F0E6] transition-all duration-300 hover:-translate-y-1 hover:bg-[#F5F0E6]/10"
           >
-            GET LOYALTY CARD
+            {t.loyalty}
             <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
         </motion.div>
@@ -109,7 +113,7 @@ export default function Hero() {
         className="absolute bottom-8 right-6 z-10 hidden items-center gap-3 text-[10px] tracking-[0.35em] text-[#F5F0E6]/70 md:right-12 md:flex"
         aria-hidden="true"
       >
-        SCROLL
+        {t.scroll}
         <motion.span
           animate={reduce ? {} : { y: [0, 6, 0] }}
           transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}

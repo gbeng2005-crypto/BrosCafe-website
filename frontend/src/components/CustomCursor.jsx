@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
+import { useApp } from "@/store/AppStore";
+import { STR } from "@/i18n";
 
 export default function CustomCursor() {
   const [label, setLabel] = useState(null);
   const [enabled, setEnabled] = useState(false);
+  const { lang } = useApp();
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
   const sx = useSpring(x, { stiffness: 400, damping: 35 });
@@ -45,9 +48,9 @@ export default function CustomCursor() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.6 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#66734A] text-[9px] font-semibold tracking-[0.2em] text-[#F5F0E6] shadow-[0_10px_30px_rgba(102,115,74,0.4)]"
+            className="flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#66734A] text-[9px] font-semibold tracking-[0.2em] text-[#F5F0E6] shadow-[0_10px_30px_rgba(102,115,74,0.4)]"
           >
-            {label.toUpperCase()}
+            {(STR[lang].cursor[label] || label).toUpperCase()}
           </motion.span>
         )}
       </AnimatePresence>

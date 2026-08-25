@@ -3,14 +3,43 @@ import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-
 import { Menu, X, ArrowUpRight, Coffee } from "lucide-react";
 import { LOYALTY_URL } from "@/config";
 import { scrollToSection } from "@/hooks/useLenis";
+import { useApp } from "@/store/AppStore";
+import { STR } from "@/i18n";
 
-const LINKS = [
-  { label: "HOME", id: "home" },
-  { label: "MENU", id: "menu" },
-  { label: "ABOUT", id: "about" },
-  { label: "WHAT'S NEW", id: "news" },
-  { label: "LOYALTY", id: "loyalty" },
+const LINK_IDS = [
+  { key: "home", id: "home" },
+  { key: "menu", id: "menu" },
+  { key: "about", id: "about" },
+  { key: "news", id: "news" },
+  { key: "loyalty", id: "loyalty" },
 ];
+
+function LangToggle({ light = false }) {
+  const { lang, setLang } = useApp();
+  return (
+    <div data-testid="lang-toggle" className="flex items-center gap-1 rounded-full border border-current/20 p-0.5" style={{ borderColor: light ? "rgba(245,240,230,0.35)" : "rgba(102,115,74,0.3)" }}>
+      {["en", "hu"].map((l) => (
+        <button
+          key={l}
+          data-testid={`lang-${l}`}
+          onClick={() => setLang(l)}
+          aria-label={l === "en" ? "Switch to English" : "Váltás magyarra"}
+          className={`rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-[0.15em] transition-all duration-300 ${
+            lang === l
+              ? light
+                ? "bg-[#F5F0E6] text-[#66734A]"
+                : "bg-[#66734A] text-[#F5F0E6]"
+              : light
+                ? "text-[#F5F0E6]/70 hover:text-[#F5F0E6]"
+                : "text-[#66734A]/60 hover:text-[#66734A]"
+          }`}
+        >
+          {l.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 function LogoBurst() {
   return (
@@ -36,6 +65,8 @@ export default function Nav() {
   const [burst, setBurst] = useState(0);
   const clicks = useRef(0);
   const { scrollY } = useScroll();
+  const { lang } = useApp();
+  const t = STR[lang].nav;
 
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 60));
 
@@ -77,7 +108,7 @@ export default function Nav() {
           </button>
 
           <ul className="hidden items-center gap-8 lg:flex">
-            {LINKS.map((l) => (
+            {LINK_IDS.map((l) => (
               <li key={l.id}>
                 <button
                   data-testid={`nav-link-${l.id}`}
@@ -86,13 +117,14 @@ export default function Nav() {
                     scrolled ? "text-[#66734A]" : "text-[#F5F0E6]"
                   }`}
                 >
-                  {l.label}
+                  {t[l.key]}
                 </button>
               </li>
             ))}
           </ul>
 
           <div className="flex items-center gap-3">
+            <LangToggle light={!scrolled} />
             <a
               data-testid="nav-loyalty-cta"
               href={LOYALTY_URL}
@@ -102,7 +134,7 @@ export default function Nav() {
                   : "bg-[#F5F0E6] text-[#66734A]"
               }`}
             >
-              GET LOYALTY CARD
+              {t.cta}
               <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
             <button
@@ -143,7 +175,7 @@ export default function Nav() {
               </button>
             </div>
             <ul className="flex flex-1 flex-col justify-center gap-2 px-8">
-              {LINKS.map((l, i) => (
+              {LINK_IDS.map((l, i) => (
                 <motion.li
                   key={l.id}
                   initial={{ opacity: 0, y: 24 }}
@@ -156,7 +188,7 @@ export default function Nav() {
                     onClick={() => go(l.id)}
                     className="font-serif-display text-5xl font-medium text-[#66734A] transition-opacity duration-300 hover:opacity-60"
                   >
-                    {l.label}
+                    {t[l.key]}
                   </button>
                 </motion.li>
               ))}
@@ -164,20 +196,21 @@ export default function Nav() {
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45, duration: 0.5 }}
-                className="mt-10"
+                className="mt-10 flex flex-wrap items-center gap-4"
               >
                 <a
                   data-testid="mobile-nav-loyalty-cta"
                   href={LOYALTY_URL}
                   className="inline-flex items-center gap-2 rounded-full bg-[#66734A] px-8 py-4 text-xs font-semibold tracking-[0.18em] text-[#F5F0E6]"
                 >
-                  GET LOYALTY CARD
+                  {t.cta}
                   <ArrowUpRight size={14} />
                 </a>
+                <LangToggle />
               </motion.li>
             </ul>
             <p className="px-8 pb-8 text-[11px] tracking-[0.22em] text-[#66734A]/60">
-              GOOD COFFEE. GOOD PEOPLE.
+              {t.tagline}
             </p>
           </motion.div>
         )}

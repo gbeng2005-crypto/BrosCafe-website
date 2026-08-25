@@ -5,6 +5,8 @@ import SectionLabel from "@/components/SectionLabel";
 import MaskedImage from "@/components/MaskedImage";
 import { useApp } from "@/store/AppStore";
 import { getProduct } from "@/data/products";
+import { lp } from "@/data/products.hu";
+import { STR } from "@/i18n";
 
 const LOOKS = [
   { id: "bros-hoodie", cls: "col-span-2 row-span-2", variant: "left" },
@@ -14,32 +16,32 @@ const LOOKS = [
 ];
 
 export default function MerchLookbook() {
-  const { openProduct } = useApp();
+  const { openProduct, lang } = useApp();
+  const t = STR[lang].merch;
 
   return (
     <section id="merch" data-testid="merch-section" className="mx-auto max-w-[1440px] px-6 py-28 md:px-12 md:py-40">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <SectionLabel number="06" title="MERCH" />
+          <SectionLabel number="06" title={t.label} />
           <Reveal>
             <h2 className="font-serif-display text-5xl font-medium leading-[1.02] tracking-tight text-[#66734A] md:text-7xl">
-              TAKE A LITTLE
+              {t.title1}
               <br />
-              BROS HOME<span className="italic">.</span>
+              {t.title2}<span className="italic">{t.punct}</span>
             </h2>
           </Reveal>
         </div>
         <Reveal delay={0.1}>
           <p className="max-w-xs text-sm leading-relaxed text-[#66734A]/70">
-            Small drops, made properly. The same things the team actually wears
-            and drinks from.
+            {t.body}
           </p>
         </Reveal>
       </div>
 
       <div className="mt-16 grid auto-rows-[200px] grid-cols-2 gap-4 md:auto-rows-[240px] md:grid-cols-4 md:gap-6">
         {LOOKS.map((look, i) => {
-          const p = getProduct(look.id);
+          const p = lp(getProduct(look.id), lang);
           return (
             <motion.div
               key={look.id}

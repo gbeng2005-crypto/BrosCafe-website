@@ -2,9 +2,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Coffee, X, Trash2 } from "lucide-react";
 import { useApp } from "@/store/AppStore";
 import { getProduct } from "@/data/products";
+import { lp } from "@/data/products.hu";
+import { STR } from "@/i18n";
 
 export default function DayList() {
-  const { day, dayOpen, setDayOpen, removeFromDay, clearDay } = useApp();
+  const { day, dayOpen, setDayOpen, removeFromDay, clearDay, lang } = useApp();
+  const t = STR[lang].day;
   const items = day.map(getProduct).filter(Boolean);
 
   return (
@@ -49,8 +52,8 @@ export default function DayList() {
             >
               <div className="flex items-center justify-between border-b border-[#66734A]/12 px-7 py-6">
                 <div>
-                  <p className="text-[10px] font-semibold tracking-[0.35em] text-[#66734A]/55">YOUR BROS DAY</p>
-                  <p className="font-serif-display mt-1 text-2xl font-medium text-[#66734A]">That's a good day.</p>
+                  <p className="text-[10px] font-semibold tracking-[0.35em] text-[#66734A]/55">{t.title}</p>
+                  <p className="font-serif-display mt-1 text-2xl font-medium text-[#66734A]">{t.sub}</p>
                 </div>
                 <button
                   data-testid="day-close"
@@ -64,7 +67,7 @@ export default function DayList() {
 
               <div className="flex-1 overflow-y-auto px-7 py-6">
                 {items.length === 0 ? (
-                  <p className="text-sm text-[#66734A]/60">Nothing here yet — go tap a few favorites.</p>
+                  <p className="text-sm text-[#66734A]/60">{t.empty}</p>
                 ) : (
                   <ul className="space-y-4">
                     <AnimatePresence>
@@ -79,7 +82,7 @@ export default function DayList() {
                         >
                           <img src={p.images[0]} alt={p.name} className="h-14 w-14 rounded-xl object-cover" />
                           <div className="flex-1">
-                            <p className="font-serif-display text-lg font-medium text-[#66734A]">{p.name}</p>
+                            <p className="font-serif-display text-lg font-medium text-[#66734A]">{lp(p, lang).name}</p>
                             <p className="text-xs text-[#66734A]/60">{p.price}</p>
                           </div>
                           <button
@@ -104,7 +107,7 @@ export default function DayList() {
                     onClick={clearDay}
                     className="text-[11px] font-semibold tracking-[0.25em] text-[#66734A]/60 transition-colors duration-300 hover:text-[#66734A]"
                   >
-                    START A NEW DAY
+                    {t.clear}
                   </button>
                 </div>
               )}

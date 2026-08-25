@@ -1,6 +1,9 @@
-const PHRASES = ["GOOD COFFEE", "GOOD PEOPLE", "BROS CAFE", "TAKE A MINUTE", "SEE YOU AT BROS"];
+import { useApp } from "@/store/AppStore";
+import { STR } from "@/i18n";
 
 export default function Marquee() {
+  const { lang } = useApp();
+  const PHRASES = STR[lang].marquee;
   const row = [...PHRASES, ...PHRASES];
   return (
     <div

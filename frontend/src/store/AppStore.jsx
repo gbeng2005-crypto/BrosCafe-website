@@ -13,6 +13,7 @@ const read = (key) => {
 export function AppProvider({ children }) {
   const [favorites, setFavorites] = useState(() => read("bros-favs"));
   const [day, setDay] = useState(() => read("bros-day"));
+  const [lang, setLang] = useState(() => localStorage.getItem("bros-lang") || "en");
   const [activeProductId, setActiveProductId] = useState(null);
   const [closingId, setClosingId] = useState(null);
   const [lightbox, setLightbox] = useState(null); // { images: [], index: 0 }
@@ -20,6 +21,7 @@ export function AppProvider({ children }) {
 
   useEffect(() => localStorage.setItem("bros-favs", JSON.stringify(favorites)), [favorites]);
   useEffect(() => localStorage.setItem("bros-day", JSON.stringify(day)), [day]);
+  useEffect(() => localStorage.setItem("bros-lang", lang), [lang]);
 
   const overlayOpen = !!activeProductId || !!lightbox || dayOpen;
   useEffect(() => {
@@ -56,6 +58,7 @@ export function AppProvider({ children }) {
       value={{
         favorites, toggleFavorite,
         day, addToDay, removeFromDay, clearDay, dayOpen, setDayOpen,
+        lang, setLang,
         activeProductId, closingId, openProduct, closeProduct,
         lightbox, openLightbox, closeLightbox,
       }}

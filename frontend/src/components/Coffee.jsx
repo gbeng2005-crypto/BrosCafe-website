@@ -4,6 +4,8 @@ import Reveal from "@/components/Reveal";
 import SectionLabel from "@/components/SectionLabel";
 import { useApp } from "@/store/AppStore";
 import { getProduct } from "@/data/products";
+import { lp } from "@/data/products.hu";
+import { STR } from "@/i18n";
 
 const DRINKS = [
   { id: "espresso", tall: true },
@@ -12,9 +14,9 @@ const DRINKS = [
   { id: "americano", tall: true },
 ];
 
-function DrinkCard({ id, index, tall }) {
+function DrinkCard({ id, index, tall, lang }) {
   const { openProduct, favorites, toggleFavorite } = useApp();
-  const drink = getProduct(id);
+  const drink = lp(getProduct(id), lang);
   const fav = favorites.includes(id);
 
   return (
@@ -78,26 +80,27 @@ function DrinkCard({ id, index, tall }) {
 }
 
 export default function Coffee() {
+  const { lang } = useApp();
+  const t = STR[lang].coffee;
   return (
     <section id="coffee" data-testid="coffee-section" className="mx-auto max-w-[1440px] px-6 py-28 md:px-12 md:py-40">
-      <SectionLabel number="01" title="THE COFFEE" />
+      <SectionLabel number="01" title={t.label} />
       <Reveal>
         <h2 className="font-serif-display max-w-3xl text-5xl font-medium leading-[1.02] tracking-tight text-[#66734A] md:text-7xl">
-          COFFEE, THE WAY
+          {t.title1}
           <br />
-          WE LIKE IT<span className="italic">.</span>
+          {t.title2}<span className="italic">{t.punct}</span>
         </h2>
       </Reveal>
       <Reveal delay={0.1}>
         <p className="mt-6 max-w-md text-base leading-relaxed text-[#66734A]/75">
-          A short menu, done properly. No syrups with seventeen ingredients — just
-          good beans, good milk, and people who care. Tap a drink to see everything about it.
+          {t.body}
         </p>
       </Reveal>
 
       <div className="mt-16 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 md:mt-20 md:gap-8">
         {DRINKS.map((d, i) => (
-          <DrinkCard key={d.id} id={d.id} index={i} tall={d.tall} />
+          <DrinkCard key={d.id} id={d.id} index={i} tall={d.tall} lang={lang} />
         ))}
       </div>
     </section>

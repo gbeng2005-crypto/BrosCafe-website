@@ -5,6 +5,7 @@ import SectionLabel from "@/components/SectionLabel";
 import MaskedImage from "@/components/MaskedImage";
 import { useApp } from "@/store/AppStore";
 import { IMAGES, VIDEOS } from "@/config";
+import { STR } from "@/i18n";
 
 const SHOTS = [
   { img: IMAGES.collageInterior, alt: "Inside Bros Cafe", cls: "col-span-2 row-span-2 h-full", variant: "left" },
@@ -40,25 +41,25 @@ function Shot({ shot, index, progress, reduce, onOpen }) {
 export default function Community() {
   const ref = useRef(null);
   const reduce = useReducedMotion();
-  const { openLightbox } = useApp();
+  const { openLightbox, lang } = useApp();
+  const t = STR[lang].community;
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const images = SHOTS.map((s) => s.img);
 
   return (
     <section id="community" ref={ref} data-testid="community-section" className="bg-white">
       <div className="mx-auto max-w-[1440px] px-6 py-28 md:px-12 md:py-40">
-        <SectionLabel number="09" title="COMMUNITY" />
+        <SectionLabel number="09" title={t.label} />
         <Reveal>
           <h2 className="font-serif-display text-5xl font-medium leading-[1.02] tracking-tight text-[#66734A] md:text-7xl">
-            SEE YOU
+            {t.title1}
             <br />
-            AT BROS<span className="italic">.</span>
+            {t.title2}<span className="italic">{t.punct}</span>
           </h2>
         </Reveal>
         <Reveal delay={0.1}>
           <p className="mt-6 max-w-md text-base leading-relaxed text-[#66734A]/75">
-            Friends, regulars, dogs at the door. This is what the place actually
-            looks like on a good day.
+            {t.body}
           </p>
         </Reveal>
 

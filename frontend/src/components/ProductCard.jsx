@@ -2,9 +2,11 @@ import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { useApp } from "@/store/AppStore";
+import { STR } from "@/i18n";
 
 export default function ProductCard({ product, index = 0, hidden = false }) {
-  const { openProduct, favorites, toggleFavorite, activeProductId, closingId } = useApp();
+  const { openProduct, favorites, toggleFavorite, activeProductId, closingId, lang } = useApp();
+  const t = STR[lang].card;
   const [hover, setHover] = useState(false);
   const videoRef = useRef(null);
   const fav = favorites.includes(product.id);
@@ -81,7 +83,7 @@ export default function ProductCard({ product, index = 0, hidden = false }) {
 
         <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center pb-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           <span className="rounded-full bg-[#F5F0E6]/95 px-5 py-2 text-[10px] font-semibold tracking-[0.25em] text-[#66734A] shadow-lg">
-            QUICK VIEW
+            {t.quick}
           </span>
         </div>
       </div>

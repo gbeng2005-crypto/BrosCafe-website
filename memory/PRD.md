@@ -56,6 +56,13 @@ Design a premium, cinematic, editorial website for Bros Cafe (olive #66734A / cr
 - Coffee section cards now open the product modal; quick-view hover chips; video hover preview on espresso card
 - Verified: desktop + mobile (390px) — modal open/switch/close, fav, day drawer, filters, search, lightbox nav, horizontal scroll, swipe gallery
 
+## Implemented (2026-08-25, part 3 — EN/HU bilingual)
+- Full English/Hungarian translation system: src/i18n.js (all UI copy) + src/data/products.hu.js (all 17 products: descriptions, tips, ingredients, behind-the-cup steps, sizes, materials, allergens)
+- EN | HU toggle in nav (desktop pill + mobile menu), choice persisted in localStorage (bros-lang)
+- Search understands Hungarian synonyms (édes, sütemény, ajándék, bögre, kávé, jeges, gofri…)
+- Cursor labels, day drawer, loyalty card mockup, marquee, Bros Moment, all section copy localized
+- Verified: HU hero/nav/collection/modal (ÍZVILÁG sliders, MÉRET, BROS TIPP, A CSÉSZE MÖGÖTT) and EN switch-back
+
 ## Backlog / Next Tasks
 - P0: Owner connects LOYALTY_URL in src/config.js to the real loyalty-card signup
 - P0: Replace placeholder videos (config.js VIDEOS) with real Bros Cafe footage

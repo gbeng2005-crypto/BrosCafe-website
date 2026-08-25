@@ -3,15 +3,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, Heart, Coffee, Plus, Check, ChevronDown } from "lucide-react";
 import { useApp } from "@/store/AppStore";
 import { getProduct, getRelated } from "@/data/products";
+import { lp } from "@/data/products.hu";
+import { STR } from "@/i18n";
 
 const EASE = [0.22, 1, 0.36, 1];
 
-const FLAVOR_PAIRS = [
-  ["bitterSweet", "BITTER", "SWEET"],
-  ["lightBold", "LIGHT", "BOLD"],
-  ["milkyCreamy", "MILKY", "CREAMY"],
-  ["hotIced", "HOT", "ICED"],
-];
+const FLAVOR_KEYS = ["bitterSweet", "lightBold", "milkyCreamy", "hotIced"];
 
 function FlavorBar({ left, right, value, testid }) {
   return (
@@ -32,7 +29,7 @@ function FlavorBar({ left, right, value, testid }) {
   );
 }
 
-function BehindTheCup({ steps }) {
+function BehindTheCup({ steps, label }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-t border-[#66734A]/12 pt-5">
@@ -41,7 +38,7 @@ function BehindTheCup({ steps }) {
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between text-[11px] font-semibold tracking-[0.3em] text-[#66734A]"
       >
-        BEHIND THE CUP
+        {label}
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.3 }}>
           <ChevronDown size={14} />
         </motion.span>
@@ -77,8 +74,8 @@ function BehindTheCup({ steps }) {
 }
 
 function MiniCard({ id, testid }) {
-  const { openProduct } = useApp();
-  const p = getProduct(id);
+  const { openProduct, lang } = useApp();
+  const p = lp(getProduct(id), lang);
   if (!p) return null;
   return (
     <button
@@ -95,8 +92,10 @@ function MiniCard({ id, testid }) {
   );
 }
 
-function ModalBody({ product }) {
-  const { favorites, toggleFavorite, day, addToDay } = useApp();
+function ModalBody({ product: raw }) {
+  const { favorites, toggleFavorite, day, addToDay, lang } = useApp();
+  const t = STR[lang].modal;
+  const product = lp(raw, lang);
   const [slide, setSlide] = useState(0);
   const [added, setAdded] = useState(false);
   const fav = favorites.includes(product.id);
@@ -169,7 +168,7 @@ function ModalBody({ product }) {
         )}
         {product.cat === "merch" && product.images.length > 2 && (
           <p className="absolute left-4 top-4 rounded-full bg-[#66734A]/85 px-4 py-1.5 text-[9px] font-semibold tracking-[0.25em] text-[#F5F0E6]">
-            DRAG TO EXPLORE
+            {t.drag}
           </p>
         )}
       </div>
@@ -185,7 +184,7 @@ function ModalBody({ product }) {
             variants={{ show: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } } }}
           >
             <motion.div variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ duration: 0.55, ease: EASE }}>
-              <p className="text-[10px] font-semibold tracking-[0.35em] text-[#66734A]/50">{product.cat.toUpperCase()}</p>
+              <p className="text-[10px] font-semibold tracking-[0.35em] text-[#66734A]/50">{t.cats[product.cat] || product.cat.toUpperCase()}</p>
               <div className="mt-1 flex items-start justify-between gap-4">
                 <h2 className="font-serif-display text-4xl font-medium tracking-tight text-[#66734A] md:text-5xl">{product.name}</h2>
                 <span className="font-serif-display mt-2 text-2xl italic text-[#66734A]/80">{product.price}</span>
@@ -199,9 +198,9 @@ function ModalBody({ product }) {
                 transition={{ duration: 0.55, ease: EASE }}
                 className="mt-7 space-y-4 rounded-2xl bg-white p-5 shadow-[0_10px_24px_rgba(102,115,74,0.06)]"
               >
-                <p className="text-[10px] font-semibold tracking-[0.3em] text-[#66734A]/50">FLAVOR</p>
-                {FLAVOR_PAIRS.map(([key, l, r]) => (
-                  <FlavorBar key={key} testid={`flavor-${key}`} left={l} right={r} value={product.flavor[key]} />
+                <p className="text-[10px] font-semibold tracking-[0.3em] text-[#66734A]/50">{t.flavor}</p>
+                {FLAVOR_KEYS.map((key, i) => (
+                  <FlavorBar key={key} testid={`flavor-${key}`} left={t.pairs_scale[i][0]} right={t.pairs_scale[i][1]} value={product.flavor[key]} />
                 ))}
               </motion.div>
             )}
@@ -209,7 +208,7 @@ function ModalBody({ product }) {
             <motion.div variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ duration: 0.55, ease: EASE }} className="mt-7 space-y-4">
               {product.sizes && product.sizes.length > 1 && (
                 <div>
-                  <p className="text-[10px] font-semibold tracking-[0.3em] text-[#66734A]/50">SIZE</p>
+                  <p className="text-[10px] font-semibold tracking-[0.3em] text-[#66734A]/50">{t.size}</p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {product.sizes.map((s) => (
                       <span key={s} className="rounded-full border border-[#66734A]/25 px-4 py-1.5 text-xs text-[#66734A]">{s}</span>
@@ -219,20 +218,20 @@ function ModalBody({ product }) {
               )}
               {product.temp && product.temp !== "hot" && (
                 <div className="flex gap-2">
-                  {(product.temp === "both" ? ["HOT", "ICED"] : [product.temp.toUpperCase()]).map((t) => (
-                    <span key={t} className="rounded-full bg-[#66734A]/10 px-4 py-1.5 text-[10px] font-semibold tracking-[0.2em] text-[#66734A]">{t}</span>
+                  {(product.temp === "both" ? ["hot", "iced"] : [product.temp]).map((k) => (
+                    <span key={k} className="rounded-full bg-[#66734A]/10 px-4 py-1.5 text-[10px] font-semibold tracking-[0.2em] text-[#66734A]">{k === "hot" ? t.hot : t.iced}</span>
                   ))}
                 </div>
               )}
               {product.material && <p className="text-xs text-[#66734A]/65">{product.material}</p>}
               {product.ingredients && (
                 <div>
-                  <p className="text-[10px] font-semibold tracking-[0.3em] text-[#66734A]/50">INSIDE</p>
+                  <p className="text-[10px] font-semibold tracking-[0.3em] text-[#66734A]/50">{t.inside}</p>
                   <p className="mt-1.5 text-sm text-[#66734A]/75">{product.ingredients.join(" · ")}</p>
                 </div>
               )}
               {product.allergens && product.allergens.length > 0 && (
-                <p className="text-[11px] text-[#66734A]/55">Allergens: {product.allergens.join(", ")}</p>
+                <p className="text-[11px] text-[#66734A]/55">{t.allergens} {product.allergens.map((a) => (t.allergenMap && t.allergenMap[a]) || a).join(", ")}</p>
               )}
             </motion.div>
 
@@ -242,14 +241,14 @@ function ModalBody({ product }) {
                 transition={{ duration: 0.55, ease: EASE }}
                 className="mt-7 rounded-2xl border border-dashed border-[#66734A]/30 p-5"
               >
-                <p className="text-[10px] font-semibold tracking-[0.3em] text-[#66734A]/50">BROS TIP</p>
+                <p className="text-[10px] font-semibold tracking-[0.3em] text-[#66734A]/50">{t.tip}</p>
                 <p className="font-serif-display mt-2 text-xl italic text-[#66734A]">"{product.tip}"</p>
               </motion.div>
             )}
 
             {product.behind && (
               <motion.div variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ duration: 0.55, ease: EASE }} className="mt-7">
-                <BehindTheCup steps={product.behind} />
+                <BehindTheCup steps={product.behind} label={t.behind} />
               </motion.div>
             )}
 
@@ -273,13 +272,13 @@ function ModalBody({ product }) {
                   inDay ? "bg-[#66734A]/15 text-[#66734A]" : "bg-[#66734A] text-[#F5F0E6] hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(102,115,74,0.3)]"
                 }`}
               >
-                {inDay ? <><Check size={14} /> IN YOUR DAY</> : <><Plus size={14} /> ADD TO MY DAY</>}
+                {inDay ? <><Check size={14} /> {t.inDay}</> : <><Plus size={14} /> {t.addDay}</>}
               </button>
             </motion.div>
 
             {product.pairings && product.pairings.length > 0 && (
               <motion.div variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ duration: 0.55, ease: EASE }} className="mt-8">
-                <p className="text-[10px] font-semibold tracking-[0.3em] text-[#66734A]/50">GOES WELL WITH</p>
+                <p className="text-[10px] font-semibold tracking-[0.3em] text-[#66734A]/50">{t.pairs}</p>
                 <div className="mt-3 grid grid-cols-2 gap-2.5">
                   {product.pairings.slice(0, 2).map((id) => (
                     <MiniCard key={id} id={id} testid={`pairing-${id}`} />
@@ -289,7 +288,7 @@ function ModalBody({ product }) {
             )}
 
             <motion.div variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ duration: 0.55, ease: EASE }} className="mt-8 border-t border-[#66734A]/12 pt-6">
-              <p className="text-[10px] font-semibold tracking-[0.3em] text-[#66734A]/50">MORE FROM BROS</p>
+              <p className="text-[10px] font-semibold tracking-[0.3em] text-[#66734A]/50">{t.more}</p>
               <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-3 md:grid-cols-1 lg:grid-cols-3">
                 {getRelated(product).map((p) => (
                   <MiniCard key={p.id} id={p.id} testid={`related-${p.id}`} />
