@@ -91,6 +91,16 @@ Design a premium, cinematic, editorial website for Bros Cafe (olive #66734A / cr
 - Verified in browser: magic link → member view (not stuck), EN/HU hammered repeatedly + navigation, stable; new-email→name-step→inbox flow; existing-email re-login via API + UI
 - Note: testing_agent subagent unavailable in this environment — verified via browser automation instead
 
+## Implemented (2026-08-26, part 6 — Master unification pass)
+- REMOVED app-style bottom nav — one website Nav everywhere (HOME / MENU / WHAT'S NEW / OPENING / LOYALTY / SHOP + account chip + EN/HU), unified Footer on all customer pages, /card/:code now uses the shared Nav too
+- ONE menu: /menu and the homepage menu preview both render from the unified products catalog (no more separate menu_items lists); every menu row opens the same cinematic ProductModal
+- Shop is now BROS COLLECTION — COMING SOON editorial page (steam micro-animation, asymmetric editorial cards, merch opens the same product modal with a COMING SOON chip; no fake checkout/notify)
+- /product/:id deep links open the shared modal over the shop (no separate product page)
+- Account page restyled as an editorial hub: "GOOD TO SEE YOU, NAME." — loyalty stamps, opening pass + countdown, rewards, favorites (click → modal), what's new, wallet, settings
+- Loyalty member view got the editorial headline "Your coffee should count."; returning-member personalization on the homepage loyalty section ("GOOD TO SEE YOU AGAIN — n/4 · OPEN MY LOYALTY")
+- Grand Opening teaser band on homepage (live server-synced countdown, "You're on the list" when reserved) + footer opening line; What's New cards navigate to /whats-new
+- Verified: opening teaser, menu modal from both menus, shop coming-soon + modal chip, account hub, loyalty headline, card page nav, footer opening line, HU rendering of shop
+
 ## Backlog / Next Tasks
 
 ## Test Credentials

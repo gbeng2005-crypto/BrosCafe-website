@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api, formatError, track } from "@/loyalty/lib/api";
-import { BrosLogo } from "@/loyalty/components/BrosLogo";
-import { LangToggle } from "@/loyalty/components/LangToggle";
+import Nav from "@/components/Nav";
 import { LoyaltyCardVisual } from "@/loyalty/components/LoyaltyCardVisual";
 import { OpeningCountdown } from "@/loyalty/components/OpeningCountdown";
 import { useLang } from "@/loyalty/i18n";
@@ -85,18 +84,13 @@ export default function LoyaltyCard() {
 
   return (
     <div className="min-h-screen bg-bros-cream">
-      <div className="mx-auto max-w-md px-6 pb-16">
-        <header className="flex items-center justify-between py-6">
-          <button onClick={() => navigate("/loyalty")} data-testid="card-home-btn" aria-label="Home">
-            <BrosLogo />
+      <Nav solid />
+      <div className="mx-auto max-w-md px-6 pb-16 pt-24">
+        <div className="flex items-center justify-end py-2">
+          <button onClick={load} data-testid="refresh-card-btn" className="text-bros-muted hover:text-bros-olive" aria-label="Refresh card">
+            <ArrowClockwise size={20} weight="light" />
           </button>
-          <div className="flex items-center gap-3">
-            <LangToggle />
-            <button onClick={load} data-testid="refresh-card-btn" className="text-bros-muted hover:text-bros-olive">
-              <ArrowClockwise size={20} weight="light" />
-            </button>
-          </div>
-        </header>
+        </div>
 
         {member.reward_ready && (
           <div className="mb-5 flex items-center gap-3 rounded-2xl border border-bros-olive/30 bg-white px-5 py-4 animate-fade-up" data-testid="reward-banner">

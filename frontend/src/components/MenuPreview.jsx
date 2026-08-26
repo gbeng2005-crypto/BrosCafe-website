@@ -3,10 +3,16 @@ import Reveal from "@/components/Reveal";
 import SectionLabel from "@/components/SectionLabel";
 import { useApp } from "@/store/AppStore";
 import { STR } from "@/i18n";
+import { PRODUCTS } from "@/data/products";
+import { lp } from "@/data/products.hu";
+
+const GROUPS = ["coffee", "cold", "food", "sweet"];
 
 export default function MenuPreview() {
-  const { lang } = useApp();
+  const { lang, openProduct, catalogVersion } = useApp();
+  void catalogVersion;
   const t = STR[lang].menu;
+  const cats = STR[lang].collection.cats;
 
   return (
     <section id="menu" data-testid="menu-section" className="mx-auto max-w-[1440px] px-6 py-28 md:px-12 md:py-40">
@@ -38,29 +44,40 @@ export default function MenuPreview() {
         </div>
 
         <div className="space-y-12">
-          {t.groups.map((group, gi) => (
-            <Reveal key={group.cat} delay={gi * 0.05}>
-              <div data-testid={`menu-group-${gi}`}>
-                <h3 className="mb-4 text-[11px] font-semibold tracking-[0.35em] text-[#66734A]/60">
-                  {group.cat}
-                </h3>
-                <ul className="divide-y divide-[#66734A]/12 border-y border-[#66734A]/12">
-                  {group.items.map(([name, price]) => (
-                    <li
-                      key={name}
-                      className="group flex items-baseline justify-between gap-4 py-4 transition-all duration-300 hover:pl-3"
-                    >
-                      <span className="font-serif-display text-2xl font-medium text-[#66734A] transition-colors duration-300">
-                        {name}
-                      </span>
-                      <span className="mx-2 flex-1 border-b border-dotted border-[#66734A]/25" />
-                      <span className="text-sm font-medium text-[#66734A]/70">{price}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          ))}
+          {GROUPS.map((g, gi) => {
+            const items = PRODUCTS.filter((p) => p.cat === g);
+            if (!items.length) return null;
+            return (
+              <Reveal key={g} delay={gi * 0.05}>
+                <div data-testid={`menu-group-${g}`}>
+                  <h3 className="mb-4 text-[11px] font-semibold tracking-[0.35em] text-[#66734A]/60">
+                    {cats[g]}
+                  </h3>
+                  <ul className="divide-y divide-[#66734A]/12 border-y border-[#66734A]/12">
+                    {items.map((p) => {
+                      const l = lp(p, lang);
+                      return (
+                        <li key={p.id}>
+                          <button
+                            data-testid={`menu-preview-${p.id}`}
+                            onClick={() => openProduct(p.id)}
+                            data-cursor="view"
+                            className="group flex w-full items-baseline justify-between gap-4 py-4 text-left transition-all duration-300 hover:pl-3"
+                          >
+                            <span className="font-serif-display text-2xl font-medium text-[#66734A] transition-colors duration-300">
+                              {l.name}
+                            </span>
+                            <span className="mx-2 flex-1 border-b border-dotted border-[#66734A]/25" />
+                            <span className="text-sm font-medium text-[#66734A]/70">{p.price}</span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>

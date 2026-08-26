@@ -63,6 +63,7 @@ export default function Loyalty() {
         <p className="font-display text-3xl text-bros-ink animate-fade-up" data-testid="loyalty-welcome-back">
           {t("loyalty_welcome_back", { name: member.name })} ☕
         </p>
+        <p className="mt-1 font-display text-2xl italic text-bros-olive/80">{t("loyalty_member_title")}</p>
 
         <div className="mt-6 rounded-[2rem] border border-bros-border bg-white p-7 text-center shadow-[0_10px_40px_rgba(102,115,74,0.08)] animate-fade-up">
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-bros-olive">{t("loyalty_your_loyalty")}</p>

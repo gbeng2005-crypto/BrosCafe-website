@@ -7,13 +7,15 @@ import { scrollToSection } from "@/hooks/useLenis";
 import { useApp } from "@/store/AppStore";
 import { useCustomer } from "@/loyalty/context/CustomerAuthContext";
 import { STR } from "@/i18n";
+import { EXTRA } from "@/i18n-extra";
 
 const LINKS = [
   { key: "home", id: "home" },
   { key: "menu", to: "/menu" },
-  { key: "about", id: "about" },
   { key: "news", id: "news" },
+  { key: "opening", to: "/opening" },
   { key: "loyalty", to: "/loyalty" },
+  { key: "shop", to: "/shop" },
 ];
 
 function LangToggle({ light = false }) {
@@ -71,7 +73,7 @@ export default function Nav({ solid = false }) {
   const { member } = useCustomer();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const t = STR[lang].nav;
+  const t = { ...STR[lang].nav, ...EXTRA[lang].nav };
   const solidNow = solid || scrolled;
 
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 60));
@@ -129,7 +131,7 @@ export default function Nav({ solid = false }) {
             {burst > 0 && <LogoBurst key={burst} />}
           </button>
 
-          <ul className="hidden items-center gap-8 lg:flex">
+          <ul className="hidden items-center gap-6 lg:flex">
             {LINKS.map((l) => (
               <li key={l.key}>
                 <button

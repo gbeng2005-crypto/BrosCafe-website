@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Reveal from "@/components/Reveal";
 import SectionLabel from "@/components/SectionLabel";
 import { IMAGES, VIDEOS } from "@/config";
@@ -9,11 +10,12 @@ import { STR } from "@/i18n";
 const POST_IMGS = [IMAGES.americano, IMAGES.cappuccino, IMAGES.about, VIDEOS.moment.poster];
 const POST_SIZES = [true, false, false, false];
 
-function PostCard({ post, index, readLabel }) {
+function PostCard({ post, index, readLabel, onOpen }) {
   return (
     <Reveal delay={index * 0.07} className={post.large ? "md:col-span-2" : ""}>
       <motion.article
         data-testid={`news-card-${index}`}
+        onClick={onOpen}
         whileHover={{ y: -8 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="group cursor-pointer overflow-hidden rounded-3xl bg-white shadow-[0_20px_40px_rgba(102,115,74,0.07)]"
@@ -44,6 +46,7 @@ function PostCard({ post, index, readLabel }) {
 
 export default function WhatsNew() {
   const { lang } = useApp();
+  const navigate = useNavigate();
   const t = STR[lang].news;
   const posts = t.posts.map((p, i) => ({ ...p, img: POST_IMGS[i], large: POST_SIZES[i] }));
 
@@ -67,7 +70,7 @@ export default function WhatsNew() {
 
       <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         {posts.map((p, i) => (
-          <PostCard key={p.title} post={p} index={i} readLabel={t.read} />
+          <PostCard key={p.title} post={p} index={i} readLabel={t.read} onOpen={() => navigate("/whats-new")} />
         ))}
       </div>
     </section>

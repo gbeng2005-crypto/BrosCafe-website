@@ -1,21 +1,41 @@
 import { Instagram, ArrowUpRight } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { LOYALTY_URL } from "@/config";
 import { scrollToSection } from "@/hooks/useLenis";
 import { useApp } from "@/store/AppStore";
 import { STR } from "@/i18n";
+import { EXTRA } from "@/i18n-extra";
 
 const LINK_KEYS = [
   { key: "home", id: "home" },
-  { key: "menu", id: "menu" },
+  { key: "menu", to: "/menu" },
   { key: "about", id: "about" },
   { key: "news", id: "news" },
-  { key: "loyalty", id: "loyalty" },
+  { key: "opening", to: "/opening" },
+  { key: "loyalty", to: "/loyalty" },
+  { key: "shop", to: "/shop" },
 ];
 
 export default function Footer() {
   const { lang } = useApp();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
   const t = STR[lang].footer;
-  const navT = STR[lang].nav;
+  const navT = { ...STR[lang].nav, ...EXTRA[lang].nav };
+
+  const go = (l) => {
+    if (l.to) {
+      navigate(l.to);
+      return;
+    }
+    if (pathname !== "/") {
+      navigate("/");
+      setTimeout(() => scrollToSection(l.id), 650);
+      return;
+    }
+    scrollToSection(l.id);
+  };
+
   return (
     <footer data-testid="footer" className="bg-[#66734A] text-[#F5F0E6]">
       <div className="mx-auto max-w-[1440px] px-6 pb-10 pt-20 md:px-12 md:pt-28">
@@ -42,10 +62,10 @@ export default function Footer() {
           <nav aria-label="Footer">
             <ul className="flex flex-wrap gap-x-8 gap-y-3">
               {LINK_KEYS.map((l) => (
-                <li key={l.id}>
+                <li key={l.key}>
                   <button
-                    data-testid={`footer-link-${l.id}`}
-                    onClick={() => scrollToSection(l.id)}
+                    data-testid={`footer-link-${l.key}`}
+                    onClick={() => go(l)}
                     className="link-underline text-xs font-medium tracking-[0.18em] text-[#F5F0E6]/85"
                   >
                     {navT[l.key]}
@@ -77,6 +97,7 @@ export default function Footer() {
 
         <div className="flex flex-col justify-between gap-3 border-t border-[#F5F0E6]/15 pt-8 text-[10px] tracking-[0.25em] text-[#F5F0E6]/50 md:flex-row">
           <p>{t.copy}</p>
+          <p>{EXTRA[lang].footer.opening}</p>
           <p>{t.made}</p>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { useApp } from "@/store/AppStore";
 import { getProduct, getRelated } from "@/data/products";
 import { lp } from "@/data/products.hu";
 import { STR } from "@/i18n";
+import { EXTRA } from "@/i18n-extra";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -187,7 +188,14 @@ function ModalBody({ product: raw }) {
               <p className="text-[10px] font-semibold tracking-[0.35em] text-[#66734A]/50">{t.cats[product.cat] || product.cat.toUpperCase()}</p>
               <div className="mt-1 flex items-start justify-between gap-4">
                 <h2 className="font-serif-display text-4xl font-medium tracking-tight text-[#66734A] md:text-5xl">{product.name}</h2>
-                <span className="font-serif-display mt-2 text-2xl italic text-[#66734A]/80">{product.price}</span>
+                <div className="flex shrink-0 flex-col items-end gap-2">
+                  <span className="font-serif-display mt-2 text-2xl italic text-[#66734A]/80">{product.price}</span>
+                  {product.cat === "merch" && (
+                    <span className="rounded-full border border-[#66734A]/40 px-3 py-1 text-[9px] font-semibold tracking-[0.25em] text-[#66734A]">
+                      {EXTRA[lang].modal.comingSoon}
+                    </span>
+                  )}
+                </div>
               </div>
               <p className="mt-3 text-sm leading-relaxed text-[#66734A]/75">{product.desc}</p>
             </motion.div>

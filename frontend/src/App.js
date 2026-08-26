@@ -1,6 +1,6 @@
 import "@/App.css";
 import "@/loyalty/loyalty.css";
-import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation, useParams } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Toaster } from "sonner";
@@ -12,6 +12,7 @@ import CustomCursor from "@/components/CustomCursor";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
+import OpeningTeaser from "@/components/OpeningTeaser";
 import Coffee from "@/components/Coffee";
 import Collection from "@/components/Collection";
 import YourPicks from "@/components/YourPicks";
@@ -55,6 +56,7 @@ function HomePage() {
       <main>
         <Hero />
         <Marquee />
+        <OpeningTeaser />
         <Coffee />
         <Collection />
         <YourPicks />
@@ -79,6 +81,16 @@ function LoyaltyShell() {
       <Outlet />
     </div>
   );
+}
+
+// /product/:id deep-links open the SAME product modal, over the collection page.
+function ProductDeepLink() {
+  const { id } = useParams();
+  const { openProduct } = useApp();
+  useEffect(() => {
+    openProduct(id);
+  }, [id, openProduct]);
+  return <ShopPage />;
 }
 
 function CustomerRoute({ children }) {
@@ -139,7 +151,7 @@ function AnimatedRoutes() {
             <Route path="/menu" element={<MenuPage />} />
             <Route path="/whats-new" element={<WhatsNewPage />} />
             <Route path="/shop" element={<ShopPage />} />
-            <Route path="/product/:id" element={<ProductDetailPage />} />
+            <Route path="/product/:id" element={<ProductDeepLink />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/opening" element={<OpeningPage />} />
             <Route path="/auth/verify" element={<VerifyMagic />} />

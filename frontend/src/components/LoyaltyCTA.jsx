@@ -5,7 +5,9 @@ import Reveal from "@/components/Reveal";
 import SectionLabel from "@/components/SectionLabel";
 import { LOYALTY_URL } from "@/config";
 import { useApp } from "@/store/AppStore";
+import { useCustomer } from "@/loyalty/context/CustomerAuthContext";
 import { STR } from "@/i18n";
+import { EXTRA } from "@/i18n-extra";
 
 function LoyaltyCardVisual({ t }) {
   const reduce = useReducedMotion();
@@ -76,7 +78,10 @@ function LoyaltyCardVisual({ t }) {
 
 export default function LoyaltyCTA() {
   const { lang } = useApp();
+  const { member } = useCustomer();
   const t = STR[lang].loyalty;
+  const x = EXTRA[lang].loyalty;
+  const required = member?.stamps_required || 4;
   return (
     <section id="loyalty" data-testid="loyalty-section" className="grain relative overflow-hidden bg-[#66734A]">
       <div className="mx-auto grid max-w-[1440px] items-center gap-16 px-6 py-28 md:px-12 md:py-40 lg:grid-cols-2 lg:gap-24">
@@ -84,16 +89,24 @@ export default function LoyaltyCTA() {
           <SectionLabel number="07" title={t.label} light />
           <Reveal>
             <h2 className="font-serif-display text-5xl font-medium leading-[1.02] tracking-tight text-[#F5F0E6] md:text-7xl">
-              {t.title1}
+              {member ? x.memberTitle1 : t.title1}
               <br />
-              {t.title2}<span className="italic">{t.punct}</span>
+              {member ? x.memberTitle2 : t.title2}<span className="italic">{t.punct}</span>
             </h2>
           </Reveal>
           <Reveal delay={0.1}>
             <p className="font-serif-display mt-8 text-3xl font-medium italic leading-snug text-[#F5F0E6]/90 md:text-4xl">
-              {t.sub1}
-              <br />
-              {t.sub2}
+              {member ? (
+                <>
+                  {member.stamps} / {required} — {x.memberSub}
+                </>
+              ) : (
+                <>
+                  {t.sub1}
+                  <br />
+                  {t.sub2}
+                </>
+              )}
             </p>
           </Reveal>
           <Reveal delay={0.15}>
@@ -107,7 +120,7 @@ export default function LoyaltyCTA() {
               href={LOYALTY_URL}
               className="group mt-10 inline-flex items-center gap-3 rounded-full bg-[#F5F0E6] px-9 py-4 text-[11px] font-semibold tracking-[0.2em] text-[#66734A] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_44px_rgba(0,0,0,0.3)]"
             >
-              {t.cta}
+              {member ? x.memberCta : t.cta}
               <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
           </Reveal>
