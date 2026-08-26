@@ -14,7 +14,7 @@ const read = (key) => {
 export function AppProvider({ children }) {
   const [favorites, setFavorites] = useState(() => read("bros-favs"));
   const [day, setDay] = useState(() => read("bros-day"));
-  const [lang, setLang] = useState(() => localStorage.getItem("bros-lang") || "en");
+  const [lang, setLang] = useState(() => localStorage.getItem("bros-lang") || "hu");
   const [catalogVersion, setCatalogVersion] = useState(0);
   const [activeProductId, setActiveProductId] = useState(null);
   const [closingId, setClosingId] = useState(null);

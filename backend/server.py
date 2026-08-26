@@ -861,6 +861,8 @@ async def request_link(body: LinkRequest):
     email = body.email.lower().strip()
     member = await db.members.find_one({"email": email})
     is_new = member is None
+    if is_new and not (body.first_name or "").strip():
+        return {"ok": True, "is_new": True, "needs_name": True}
     if is_new:
         doc = {"code": uuid.uuid4().hex[:10], "name": (body.first_name or "Friend").strip(),
                "email": email, "stamps": 0, "total_coffees": 0, "rewards_redeemed": 0,

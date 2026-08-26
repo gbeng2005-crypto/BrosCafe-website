@@ -2,7 +2,7 @@ import "@/App.css";
 import "@/loyalty/loyalty.css";
 import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useRef } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Toaster } from "sonner";
 import { Coffee as CoffeeIcon } from "lucide-react";
 import { AppProvider, useApp } from "@/store/AppStore";
@@ -95,22 +95,26 @@ function CustomerRoute({ children }) {
 }
 
 // Keeps the site language and the loyalty language in lockstep (shared "bros-lang" key).
+// Last writer wins — whichever side changed most recently pushes to the other.
 function LangSync() {
   const { lang: loyalLang, setLang: setLoyalLang } = useLang();
   const { lang: siteLang, setLang: setSiteLang } = useApp();
-  const mounted = useRef(false);
+  const prev = useRef(null);
+
   useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true;
-      if (loyalLang !== siteLang) setLoyalLang(siteLang);
+    if (prev.current === null) {
+      // First mount: if stored defaults differ, loyalty's stored value wins and we settle once.
+      prev.current = { a: loyalLang, b: siteLang };
+      if (loyalLang !== siteLang) setSiteLang(loyalLang);
+      return;
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (loyalLang !== siteLang) setSiteLang(loyalLang);
-  }, [loyalLang]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (loyalLang !== siteLang) setLoyalLang(siteLang);
-  }, [siteLang]); // eslint-disable-line react-hooks/exhaustive-deps
+    const p = prev.current;
+    if (loyalLang !== siteLang) {
+      if (loyalLang !== p.a) setSiteLang(loyalLang);
+      else if (siteLang !== p.b) setLoyalLang(siteLang);
+    }
+    prev.current = { a: loyalLang, b: siteLang };
+  }, [loyalLang, siteLang, setLoyalLang, setSiteLang]);
   return null;
 }
 
@@ -120,16 +124,15 @@ function AnimatedRoutes() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
+  // Enter-only transition: no exit hang, no stuck screens on redirects (magic links).
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location.pathname}
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <Routes location={location}>
+    <motion.div
+      key={location.pathname}
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <Routes location={location}>
           <Route path="/" element={<HomePage />} />
           <Route element={<LoyaltyShell />}>
             <Route path="/loyalty" element={<LoyaltyPage />} />
@@ -148,7 +151,6 @@ function AnimatedRoutes() {
           </Route>
         </Routes>
       </motion.div>
-    </AnimatePresence>
   );
 }
 

@@ -84,6 +84,13 @@ Design a premium, cinematic, editorial website for Bros Cafe (olive #66734A / cr
 - Fixed: duplicate i18n key collision (discover vs discoverRow) that blanked the homepage
 - Verified: account chip 2/4 in nav, loyalty nav route, discovery→modal, shop catalog, logo→home, EN⇄HU sync both directions, member view with stamps
 
+## Bugfixes (2026-08-26)
+- FIXED language flip EN→HU: LangSync rewritten as last-writer-wins single effect; both systems now default to the shared "bros-lang" key (HU default, matching the café)
+- FIXED magic-link redirect hang: replaced AnimatePresence mode="wait" route wrapper with enter-only fade/slide (exit hang left users stuck on "Signing you in…")
+- IMPROVED sign-in: one smart email form at /loyalty — existing email → sign-in link (no duplicate account, no name needed); new email → asks first name, then creates card + sends link; backend request-link returns needs_name without creating phantom members
+- Verified in browser: magic link → member view (not stuck), EN/HU hammered repeatedly + navigation, stable; new-email→name-step→inbox flow; existing-email re-login via API + UI
+- Note: testing_agent subagent unavailable in this environment — verified via browser automation instead
+
 ## Backlog / Next Tasks
 
 ## Test Credentials

@@ -16,7 +16,7 @@ export default function Loyalty() {
   const [params] = useSearchParams();
   const isWelcome = params.get("welcome") === "1";
 
-  const [mode, setMode] = useState("register"); // register | login
+  const [mode, setMode] = useState("email"); // email | name
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
@@ -27,8 +27,12 @@ export default function Loyalty() {
     if (!email.trim()) return;
     setBusy(true);
     try {
-      await requestLink(email.trim(), mode === "register" ? firstName.trim() : undefined);
-      setSentTo(email.trim());
+      const { data } = await requestLink(email.trim(), mode === "name" ? firstName.trim() : undefined);
+      if (data?.needs_name) {
+        setMode("name");
+      } else {
+        setSentTo(email.trim());
+      }
     } catch (err) {
       toast.error(formatError(err.response?.data?.detail));
     } finally {
@@ -131,9 +135,9 @@ export default function Loyalty() {
       </section>
 
       <form onSubmit={submit} className="mt-8 space-y-4" data-testid="loyalty-form">
-        <p className="font-display text-2xl text-bros-ink">{mode === "register" ? t("loyalty_form_title") : t("loyalty_login_title")}</p>
-        <p className="-mt-2 text-sm text-bros-muted">{mode === "register" ? t("loyalty_form_sub") : t("loyalty_login_sub")}</p>
-        {mode === "register" && (
+        <p className="font-display text-2xl text-bros-ink">{mode === "name" ? t("magic_need_name") : t("loyalty_form_title")}</p>
+        <p className="-mt-2 text-sm text-bros-muted">{mode === "name" ? t("magic_need_name_sub") : t("magic_form_sub")}</p>
+        {mode === "name" && (
           <div>
             <label className="text-xs font-semibold uppercase tracking-wide text-bros-muted">{t("label_first_name")}</label>
             <input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Jordan" required data-testid="loyalty-firstname"
@@ -147,14 +151,9 @@ export default function Loyalty() {
         </div>
         <button type="submit" disabled={busy} data-testid="loyalty-submit"
           className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-bros-olive text-base font-semibold text-white transition-colors hover:bg-bros-olive-dark disabled:opacity-60">
-          <Coffee size={20} weight="fill" /> {mode === "register" ? t("loyalty_create_cta") : t("loyalty_login_cta")}
+          <Coffee size={20} weight="fill" /> {mode === "name" ? t("loyalty_create_cta") : t("magic_send")}
         </button>
       </form>
-
-      <button onClick={() => setMode(mode === "register" ? "login" : "register")} data-testid="loyalty-toggle-mode"
-        className="mt-4 flex w-full items-center justify-center gap-2 text-sm font-medium text-bros-olive hover:underline">
-        {mode === "register" ? <><Gift size={14} /> {t("loyalty_already_member")}</> : <><ArrowLeft size={14} /> {t("back_to_register")}</>}
-      </button>
 
       <p className="mt-8 text-center text-xs leading-relaxed text-bros-muted">{t("privacy_note")}</p>
     </CustomerLayout>
