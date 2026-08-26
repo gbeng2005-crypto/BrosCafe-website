@@ -63,13 +63,21 @@ Design a premium, cinematic, editorial website for Bros Cafe (olive #66734A / cr
 - Cursor labels, day drawer, loyalty card mockup, marquee, Bros Moment, all section copy localized
 - Verified: HU hero/nav/collection/modal (ÍZVILÁG sliders, MÉRET, BROS TIPP, A CSÉSZE MÖGÖTT) and EN switch-back
 
+## Implemented (2026-08-26, part 4 — Loyalty system merged)
+- Cloned github.com/gbeng2005-crypto/BrosCafe → /app/broscafe-loyalty (kept as reference copy)
+- Backend REPLACED with the real loyalty API (server.py + apple_wallet.py + assets/); env: JWT_SECRET, ADMIN_EMAIL/PASSWORD (biblebuddiesjustforyou@gmail.com / BrosCafe2026!), FRONTEND_URL, EMERGENT_EMAIL_KEY (managed email — magic links send for real), CAFE_* details
+- Frontend: loyalty app ported to src/loyalty/ (pages, contexts, i18n, components, assets) with import rewrites; mounted under LoyaltyShell providers at routes: /loyalty /menu /whats-new /shop /product/:id /contact /opening /auth/verify /card/:code /account /login /staff /admin
+- Homepage CTAs now point to /loyalty; VIEW MENU → /menu (full dual-currency menu)
+- Seeded content (2 What's New items, 3 shop products) via seed_content.py
+- Styling scoped: loyalty.css holds shadcn HSL vars + Playfair/Manrope + stamp/reward keyframes; cinematic homepage untouched
+- Verified end-to-end: admin login → /admin analytics (live data), magic-link request sends email (202 from proxy), verify → member + auto-reserved opening pass, staff scan adds stamp, /loyalty signup UI → inbox screen, /opening live countdown (Sept 16, 2026 08:00), homepage CTA → /loyalty
+- NOT active: Apple Wallet pass signing (needs APPLE_* certs/env — code dormant, see APPLE_WALLET_SETUP.md in the cloned repo); Google Wallet (was backlog P1 in their PRD); Stripe shop checkout (no live key)
+
 ## Backlog / Next Tasks
-- P0: Owner connects LOYALTY_URL in src/config.js to the real loyalty-card signup
-- P0: Replace placeholder videos (config.js VIDEOS) with real Bros Cafe footage
-- P1: Real photography for community collage + What's New
-- P1: Full /menu page (VIEW MENU currently placeholder)
-- P2: Products/merch shelf, Instagram feed embed, contact/location block with hours + map
-- P2: Multi-page routing with page transitions if site grows beyond one page
+- P0: Point loyalty pages' Instagram/contact to real handles (currently placeholders)
+- P1: Apple Wallet certs to activate wallet passes; Google Wallet
+- P1: Unify the two language systems (site STR vs loyalty i18n) so one toggle rules both
+- P2: Replace placeholder imagery site-wide with real Bros photos/video
 
 ## Test Credentials
 None — no auth/accounts on this site by design (loyalty system lives elsewhere).

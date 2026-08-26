@@ -4,7 +4,7 @@
 // VIDEOS: swap these URLs with real Bros Cafe footage when ready.
 // ─────────────────────────────────────────────────────────────
 
-export const LOYALTY_URL = "#loyalty-card-signup";
+export const LOYALTY_URL = "/loyalty";
 
 export const VIDEOS = {
   hero: {

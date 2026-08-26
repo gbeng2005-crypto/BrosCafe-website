@@ -28,7 +28,7 @@ export default function MenuPreview() {
           <Reveal delay={0.15}>
             <a
               data-testid="view-menu-button"
-              href="#menu-full"
+              href="/menu"
               className="group mt-10 inline-flex items-center gap-3 rounded-full bg-[#66734A] px-8 py-4 text-[11px] font-semibold tracking-[0.2em] text-[#F5F0E6] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(102,115,74,0.3)]"
             >
               {t.cta}
