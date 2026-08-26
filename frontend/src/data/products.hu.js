@@ -106,3 +106,48 @@ export function lp(product, lang) {
   const h = HU[product.id];
   return h ? { ...product, ...h } : product;
 }
+
+// ── Unified catalog loader ───────────────────────────────────
+// The backend `products` collection is the single source of truth.
+// This hydrates the frontend catalog from it (bundled data stays as fallback).
+function mapDoc(d) {
+  const hu = {
+    name: d.name_hu, desc: d.desc_hu, tip: d.tip_hu,
+    ingredients: d.ingredients_hu, behind: d.behind_hu, sizes: d.sizes_hu, material: d.material_hu,
+  };
+  Object.keys(hu).forEach((k) => hu[k] === undefined && delete hu[k]);
+  HU[d.id] = hu;
+  return {
+    id: d.id,
+    name: d.name_en,
+    cat: d.cat || d.category || "coffee",
+    price: d.price != null ? String(d.price) : "",
+    desc: d.desc_en || "",
+    images: d.images && d.images.length ? d.images : [d.image].filter(Boolean),
+    video: d.video,
+    ingredients: d.ingredients_en,
+    flavor: d.flavor,
+    sizes: d.sizes_en,
+    temp: d.temp,
+    allergens: d.allergens,
+    material: d.material_en,
+    tip: d.tip_en,
+    behind: d.behind_en,
+    pairings: d.pairings || [],
+  };
+}
+
+export async function loadCatalog() {
+  try {
+    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/products`);
+    if (!res.ok) return false;
+    const docs = await res.json();
+    const mapped = (Array.isArray(docs) ? docs : []).filter((d) => d.active !== false && d.id && d.name_en).map(mapDoc);
+    if (mapped.length < 5) return false;
+    const { PRODUCTS } = await import("@/data/products");
+    PRODUCTS.splice(0, PRODUCTS.length, ...mapped);
+    return true;
+  } catch {
+    return false;
+  }
+}

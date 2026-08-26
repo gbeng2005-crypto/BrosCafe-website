@@ -1,23 +1,25 @@
 import { useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { Menu, X, ArrowUpRight, Coffee } from "lucide-react";
+import { Menu, X, ArrowUpRight, Coffee, User } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { LOYALTY_URL } from "@/config";
 import { scrollToSection } from "@/hooks/useLenis";
 import { useApp } from "@/store/AppStore";
+import { useCustomer } from "@/loyalty/context/CustomerAuthContext";
 import { STR } from "@/i18n";
 
-const LINK_IDS = [
+const LINKS = [
   { key: "home", id: "home" },
-  { key: "menu", id: "menu" },
+  { key: "menu", to: "/menu" },
   { key: "about", id: "about" },
   { key: "news", id: "news" },
-  { key: "loyalty", id: "loyalty" },
+  { key: "loyalty", to: "/loyalty" },
 ];
 
 function LangToggle({ light = false }) {
   const { lang, setLang } = useApp();
   return (
-    <div data-testid="lang-toggle" className="flex items-center gap-1 rounded-full border border-current/20 p-0.5" style={{ borderColor: light ? "rgba(245,240,230,0.35)" : "rgba(102,115,74,0.3)" }}>
+    <div data-testid="lang-toggle" className="flex items-center gap-1 rounded-full p-0.5" style={{ border: `1px solid ${light ? "rgba(245,240,230,0.35)" : "rgba(102,115,74,0.3)"}` }}>
       {["en", "hu"].map((l) => (
         <button
           key={l}
@@ -59,27 +61,47 @@ function LogoBurst() {
   );
 }
 
-export default function Nav() {
+export default function Nav({ solid = false }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [burst, setBurst] = useState(0);
   const clicks = useRef(0);
   const { scrollY } = useScroll();
   const { lang } = useApp();
+  const { member } = useCustomer();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
   const t = STR[lang].nav;
+  const solidNow = solid || scrolled;
 
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 60));
 
-  const go = (id) => {
+  const go = (l) => {
     setOpen(false);
-    scrollToSection(id);
+    if (l.to) {
+      navigate(l.to);
+      return;
+    }
+    if (pathname !== "/") {
+      navigate("/");
+      setTimeout(() => scrollToSection(l.id), 650);
+      return;
+    }
+    scrollToSection(l.id);
   };
 
   const logoClick = () => {
     clicks.current += 1;
     if (clicks.current % 5 === 0) setBurst((b) => b + 1);
-    go("home");
+    setOpen(false);
+    if (pathname !== "/") {
+      navigate("/");
+    } else {
+      scrollToSection("home");
+    }
   };
+
+  const accountLabel = member ? `${member.stamps}/${member.stamps_required || 4}` : null;
 
   return (
     <>
@@ -87,9 +109,9 @@ export default function Nav() {
         data-testid="main-nav"
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.9, delay: 1.5, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.9, delay: pathname === "/" ? 1.5 : 0.1, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-500 ${
-          scrolled
+          solidNow
             ? "bg-[#F5F0E6]/75 backdrop-blur-xl shadow-[0_1px_0_rgba(102,115,74,0.12)]"
             : "bg-transparent"
         }`}
@@ -99,7 +121,7 @@ export default function Nav() {
             data-testid="nav-logo"
             onClick={logoClick}
             className={`relative font-serif-display text-xl font-semibold tracking-[0.18em] transition-colors duration-500 ${
-              scrolled ? "text-[#66734A]" : "text-[#F5F0E6]"
+              solidNow ? "text-[#66734A]" : "text-[#F5F0E6]"
             }`}
             aria-label="Bros Cafe — back to top"
           >
@@ -108,13 +130,13 @@ export default function Nav() {
           </button>
 
           <ul className="hidden items-center gap-8 lg:flex">
-            {LINK_IDS.map((l) => (
-              <li key={l.id}>
+            {LINKS.map((l) => (
+              <li key={l.key}>
                 <button
-                  data-testid={`nav-link-${l.id}`}
-                  onClick={() => go(l.id)}
+                  data-testid={`nav-link-${l.key}`}
+                  onClick={() => go(l)}
                   className={`link-underline text-[11px] font-medium tracking-[0.22em] transition-colors duration-500 ${
-                    scrolled ? "text-[#66734A]" : "text-[#F5F0E6]"
+                    solidNow ? "text-[#66734A]" : "text-[#F5F0E6]"
                   }`}
                 >
                   {t[l.key]}
@@ -124,12 +146,31 @@ export default function Nav() {
           </ul>
 
           <div className="flex items-center gap-3">
-            <LangToggle light={!scrolled} />
+            <button
+              data-testid="nav-account"
+              onClick={() => navigate(member ? "/account" : "/loyalty")}
+              aria-label={member ? "Your Bros Cafe account" : "Sign in or get your loyalty card"}
+              className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[11px] font-semibold tracking-[0.12em] transition-all duration-300 hover:-translate-y-0.5 ${
+                solidNow
+                  ? "border border-[#66734A]/30 text-[#66734A]"
+                  : "border border-[#F5F0E6]/40 text-[#F5F0E6]"
+              }`}
+            >
+              {member ? (
+                <>
+                  <Coffee size={13} strokeWidth={1.8} />
+                  {accountLabel}
+                </>
+              ) : (
+                <User size={15} strokeWidth={1.8} />
+              )}
+            </button>
+            <LangToggle light={!solidNow} />
             <a
               data-testid="nav-loyalty-cta"
               href={LOYALTY_URL}
               className={`group hidden items-center gap-2 rounded-full px-6 py-2.5 text-[11px] font-semibold tracking-[0.18em] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(102,115,74,0.25)] sm:inline-flex ${
-                scrolled
+                solidNow
                   ? "bg-[#66734A] text-[#F5F0E6]"
                   : "bg-[#F5F0E6] text-[#66734A]"
               }`}
@@ -142,7 +183,7 @@ export default function Nav() {
               onClick={() => setOpen(true)}
               aria-label="Open menu"
               className={`transition-colors duration-500 lg:hidden ${
-                scrolled ? "text-[#66734A]" : "text-[#F5F0E6]"
+                solidNow ? "text-[#66734A]" : "text-[#F5F0E6]"
               }`}
             >
               <Menu size={26} strokeWidth={1.5} />
@@ -175,17 +216,17 @@ export default function Nav() {
               </button>
             </div>
             <ul className="flex flex-1 flex-col justify-center gap-2 px-8">
-              {LINK_IDS.map((l, i) => (
+              {LINKS.map((l, i) => (
                 <motion.li
-                  key={l.id}
+                  key={l.key}
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 12 }}
                   transition={{ delay: 0.08 + i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <button
-                    data-testid={`mobile-nav-link-${l.id}`}
-                    onClick={() => go(l.id)}
+                    data-testid={`mobile-nav-link-${l.key}`}
+                    onClick={() => go(l)}
                     className="font-serif-display text-5xl font-medium text-[#66734A] transition-opacity duration-300 hover:opacity-60"
                   >
                     {t[l.key]}
@@ -195,8 +236,21 @@ export default function Nav() {
               <motion.li
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.45, duration: 0.5 }}
-                className="mt-10 flex flex-wrap items-center gap-4"
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
+                <button
+                  data-testid="mobile-nav-link-account"
+                  onClick={() => { setOpen(false); navigate("/account"); }}
+                  className="font-serif-display text-3xl font-medium italic text-[#66734A]/70 transition-opacity duration-300 hover:opacity-60"
+                >
+                  {lang === "hu" ? "Fiókom" : "My Account"}
+                </button>
+              </motion.li>
+              <motion.li
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className="mt-8 flex flex-wrap items-center gap-4"
               >
                 <a
                   data-testid="mobile-nav-loyalty-cta"

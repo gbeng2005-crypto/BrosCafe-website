@@ -369,11 +369,11 @@ const STRINGS = {
 const LanguageContext = createContext(null);
 
 export function LanguageProvider({ children }) {
-  const [lang, setLangState] = useState(() => localStorage.getItem("bros_lang") || "hu");
+  const [lang, setLangState] = useState(() => localStorage.getItem("bros-lang") || "hu");
 
   const setLang = useCallback((l) => {
     setLangState(l);
-    localStorage.setItem("bros_lang", l);
+    localStorage.setItem("bros-lang", l);
   }, []);
 
   const t = useCallback(

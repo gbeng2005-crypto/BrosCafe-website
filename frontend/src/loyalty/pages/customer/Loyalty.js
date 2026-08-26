@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { CustomerLayout } from "@/loyalty/components/CustomerLayout";
 import { LoyaltyProgress } from "@/loyalty/components/LoyaltyProgress";
+import { DiscoverRow } from "@/loyalty/components/DiscoverRow";
 import { useCustomer } from "@/loyalty/context/CustomerAuthContext";
 import { useLang } from "@/loyalty/i18n";
 import { formatError } from "@/loyalty/lib/api";
@@ -87,6 +88,8 @@ export default function Loyalty() {
             <DeviceMobile size={18} /> {t("add_google")}
           </button>
         </div>
+
+        <DiscoverRow />
       </CustomerLayout>
     );
   }

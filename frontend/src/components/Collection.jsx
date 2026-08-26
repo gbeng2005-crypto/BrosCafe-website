@@ -26,7 +26,7 @@ const SYNONYMS = {
 export default function Collection() {
   const [cat, setCat] = useState("all");
   const [query, setQuery] = useState("");
-  const { lang } = useApp();
+  const { lang, catalogVersion } = useApp();
   const t = STR[lang].collection;
 
   const filtered = useMemo(() => {
@@ -45,7 +45,7 @@ export default function Collection() {
       });
     }
     return list;
-  }, [cat, query, lang]);
+  }, [cat, query, lang, catalogVersion]);
 
   return (
     <section id="collection" data-testid="collection-section" className="mx-auto max-w-[1440px] px-6 pb-28 md:px-12 md:pb-40">

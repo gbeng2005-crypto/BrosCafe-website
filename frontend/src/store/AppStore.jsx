@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { loadCatalog } from "@/data/products.hu";
 
 const AppCtx = createContext(null);
 
@@ -14,6 +15,7 @@ export function AppProvider({ children }) {
   const [favorites, setFavorites] = useState(() => read("bros-favs"));
   const [day, setDay] = useState(() => read("bros-day"));
   const [lang, setLang] = useState(() => localStorage.getItem("bros-lang") || "en");
+  const [catalogVersion, setCatalogVersion] = useState(0);
   const [activeProductId, setActiveProductId] = useState(null);
   const [closingId, setClosingId] = useState(null);
   const [lightbox, setLightbox] = useState(null); // { images: [], index: 0 }
@@ -22,6 +24,11 @@ export function AppProvider({ children }) {
   useEffect(() => localStorage.setItem("bros-favs", JSON.stringify(favorites)), [favorites]);
   useEffect(() => localStorage.setItem("bros-day", JSON.stringify(day)), [day]);
   useEffect(() => localStorage.setItem("bros-lang", lang), [lang]);
+
+  // One product source: hydrate the catalog from the backend (falls back to bundled data).
+  useEffect(() => {
+    loadCatalog().then((ok) => ok && setCatalogVersion((v) => v + 1));
+  }, []);
 
   const overlayOpen = !!activeProductId || !!lightbox || dayOpen;
   useEffect(() => {
@@ -58,7 +65,7 @@ export function AppProvider({ children }) {
       value={{
         favorites, toggleFavorite,
         day, addToDay, removeFromDay, clearDay, dayOpen, setDayOpen,
-        lang, setLang,
+        lang, setLang, catalogVersion,
         activeProductId, closingId, openProduct, closeProduct,
         lightbox, openLightbox, closeLightbox,
       }}

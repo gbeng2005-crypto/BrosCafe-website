@@ -73,11 +73,18 @@ Design a premium, cinematic, editorial website for Bros Cafe (olive #66734A / cr
 - Verified end-to-end: admin login → /admin analytics (live data), magic-link request sends email (202 from proxy), verify → member + auto-reserved opening pass, staff scan adds stamp, /loyalty signup UI → inbox screen, /opening live countdown (Sept 16, 2026 08:00), homepage CTA → /loyalty
 - NOT active: Apple Wallet pass signing (needs APPLE_* certs/env — code dormant, see APPLE_WALLET_SETUP.md in the cloned repo); Google Wallet (was backlog P1 in their PRD); Stripe shop checkout (no live key)
 
+## Implemented (2026-08-26, part 5 — ONE unified ecosystem)
+- One customer identity everywhere: CustomerAuthProvider moved to app root — homepage nav shows a live "☕ n/4" account chip when signed in; magic-link session is shared across homepage, loyalty, account, shop (no re-login ever)
+- One navigation: main Nav now route-aware (MENU→/menu, LOYALTY→/loyalty, anchors scroll home first), used on loyalty pages too via `solid` prop; CustomerLayout keeps mobile bottom nav with live stamp count; logo always returns home without reload
+- One typography: loyalty pages now use Cormorant Garamond + DM Sans (tailwind fontFamily switched) — same serif/editorial look as homepage
+- One language: shared localStorage key + LangSync bridge — one EN/HU toggle instantly switches BOTH the homepage and loyalty pages, no reload
+- One product catalog: backend `products` collection is the single source (seed_catalog.py, 16 items, full HU/EN + flavor/tips/galleries); frontend hydrates from /api/products on load with bundled fallback; Shop, product details, homepage Collection, product modal, and the new loyalty "Discover something new" row all read the same catalog; admin can add products via POST /api/admin/products
+- Loyalty member view gained "Discover something new" — opens the SAME cinematic ProductModal (now mounted globally)
+- Smooth 350ms fade/slide page transitions between all routes + scroll reset
+- Fixed: duplicate i18n key collision (discover vs discoverRow) that blanked the homepage
+- Verified: account chip 2/4 in nav, loyalty nav route, discovery→modal, shop catalog, logo→home, EN⇄HU sync both directions, member view with stamps
+
 ## Backlog / Next Tasks
-- P0: Point loyalty pages' Instagram/contact to real handles (currently placeholders)
-- P1: Apple Wallet certs to activate wallet passes; Google Wallet
-- P1: Unify the two language systems (site STR vs loyalty i18n) so one toggle rules both
-- P2: Replace placeholder imagery site-wide with real Bros photos/video
 
 ## Test Credentials
 None — no auth/accounts on this site by design (loyalty system lives elsewhere).

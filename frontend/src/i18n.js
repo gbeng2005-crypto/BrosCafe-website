@@ -85,6 +85,7 @@ export const STR = {
       cats: { coffee: "COFFEE", cold: "COLD", food: "FOOD", sweet: "SWEET", merch: "MERCH" },
     },
     card: { quick: "QUICK VIEW" },
+    discoverRow: { title: "DISCOVER SOMETHING NEW", sub: "Something you might like." },
     day: {
       title: "YOUR BROS DAY", sub: "That's a good day.",
       empty: "Nothing here yet — go tap a few favorites.", clear: "START A NEW DAY",
@@ -179,6 +180,7 @@ export const STR = {
       cats: { coffee: "KÁVÉ", cold: "HIDEG", food: "ÉTEL", sweet: "ÉDESSÉG", merch: "MERCH" },
     },
     card: { quick: "GYORSNÉZET" },
+    discoverRow: { title: "FEDEZZ FEL VALAMI ÚJAT", sub: "Valami, ami tetszhet." },
     day: {
       title: "A TE BROS NAPOD", sub: "Ez aztán a jó nap.",
       empty: "Még üres — koppints pár kedvencre.", clear: "ÚJ NAP KEZDÉSE",

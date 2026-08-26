@@ -1,9 +1,11 @@
 import "@/App.css";
 import "@/loyalty/loyalty.css";
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Toaster } from "sonner";
 import { Coffee as CoffeeIcon } from "lucide-react";
-import { AppProvider } from "@/store/AppStore";
+import { AppProvider, useApp } from "@/store/AppStore";
 import { useLenis } from "@/hooks/useLenis";
 import Loader from "@/components/Loader";
 import CustomCursor from "@/components/CustomCursor";
@@ -25,7 +27,7 @@ import Footer from "@/components/Footer";
 import ProductModal from "@/components/ProductModal";
 import Lightbox from "@/components/Lightbox";
 import DayList from "@/components/DayList";
-import { LanguageProvider } from "@/loyalty/i18n";
+import { LanguageProvider, useLang } from "@/loyalty/i18n";
 import { CustomerAuthProvider, useCustomer } from "@/loyalty/context/CustomerAuthContext";
 import { AuthProvider } from "@/loyalty/context/AuthContext";
 import { ProtectedRoute } from "@/loyalty/components/ProtectedRoute";
@@ -66,8 +68,6 @@ function HomePage() {
         <Community />
       </main>
       <Footer />
-      <ProductModal />
-      <Lightbox />
       <DayList />
     </div>
   );
@@ -75,16 +75,9 @@ function HomePage() {
 
 function LoyaltyShell() {
   return (
-    <LanguageProvider>
-      <CustomerAuthProvider>
-        <AuthProvider>
-          <div className="loyalty-app min-h-screen">
-            <Outlet />
-          </div>
-          <Toaster position="top-center" richColors />
-        </AuthProvider>
-      </CustomerAuthProvider>
-    </LanguageProvider>
+    <div className="loyalty-app min-h-screen">
+      <Outlet />
+    </div>
   );
 }
 
@@ -101,11 +94,42 @@ function CustomerRoute({ children }) {
   return children;
 }
 
-function App() {
+// Keeps the site language and the loyalty language in lockstep (shared "bros-lang" key).
+function LangSync() {
+  const { lang: loyalLang, setLang: setLoyalLang } = useLang();
+  const { lang: siteLang, setLang: setSiteLang } = useApp();
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      if (loyalLang !== siteLang) setLoyalLang(siteLang);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (loyalLang !== siteLang) setSiteLang(loyalLang);
+  }, [loyalLang]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (loyalLang !== siteLang) setLoyalLang(siteLang);
+  }, [siteLang]); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
+}
+
+function AnimatedRoutes() {
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
-    <BrowserRouter>
-      <AppProvider>
-        <Routes>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <Routes location={location}>
           <Route path="/" element={<HomePage />} />
           <Route element={<LoyaltyShell />}>
             <Route path="/loyalty" element={<LoyaltyPage />} />
@@ -123,7 +147,27 @@ function App() {
             <Route path="/admin" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
           </Route>
         </Routes>
-      </AppProvider>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <LanguageProvider>
+        <CustomerAuthProvider>
+          <AuthProvider>
+            <AppProvider>
+              <LangSync />
+              <AnimatedRoutes />
+              <ProductModal />
+              <Lightbox />
+              <Toaster position="top-center" richColors />
+            </AppProvider>
+          </AuthProvider>
+        </CustomerAuthProvider>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }
