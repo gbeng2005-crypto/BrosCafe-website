@@ -84,6 +84,12 @@ Design a premium, cinematic, editorial website for Bros Cafe (olive #66734A / cr
 - Fixed: duplicate i18n key collision (discover vs discoverRow) that blanked the homepage
 - Verified: account chip 2/4 in nav, loyalty nav route, discovery→modal, shop catalog, logo→home, EN⇄HU sync both directions, member view with stamps
 
+## Implemented (2026-08-26, part 7 — Apple Wallet LIVE)
+- Apple Wallet activated with real certificates: certs in /app/backend/certs (pass.pem, ios-private-key.pem, wwdr.pem G4 + Apple root for verification)
+- Verified: key matches cert, chain verifies to Apple Root CA (pass.pem: OK), /api/admin/wallet/status → configured:true, signed .pkpass generates (63KB, manifest hashes verified, correct passTypeIdentifier/teamIdentifier, unique serial per member, webServiceURL wired for push updates)
+- UI: "Add to Apple Wallet" on /loyalty downloads the real signed pass
+- Still dormant: Google Wallet (no integration in original system); APNs push fires on balance change once a device registers a pass
+
 ## Bugfixes (2026-08-26)
 - FIXED language flip EN→HU: LangSync rewritten as last-writer-wins single effect; both systems now default to the shared "bros-lang" key (HU default, matching the café)
 - FIXED magic-link redirect hang: replaced AnimatePresence mode="wait" route wrapper with enter-only fade/slide (exit hang left users stuck on "Signing you in…")
